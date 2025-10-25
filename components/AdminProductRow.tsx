@@ -52,15 +52,17 @@ const AdminProductRow: React.FC<AdminProductRowProps> = ({ product, onUpdate, on
            <div className="md:col-span-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
               <input type="text" value={editedProduct.name} onChange={e => handleInputChange('name', e.target.value)} className="bg-gray-700 p-2 rounded w-full" placeholder="Nome" />
               <input type="text" value={editedProduct.sku} onChange={e => handleInputChange('sku', e.target.value)} className="bg-gray-700 p-2 rounded w-full" placeholder="SKU" />
-              <input type="text" value={editedProduct.price} onChange={e => handleInputChange('price', e.target.value)} className="bg-gray-700 p-2 rounded w-full" placeholder="Preço" />
-              <input type="text" value={editedProduct.category} onChange={e => handleInputChange('category', e.target.value)} className="sm:col-span-2 bg-gray-700 p-2 rounded w-full" placeholder="Categoria" />
+              <input type="text" value={editedProduct.category} onChange={e => handleInputChange('category', e.target.value)} className="bg-gray-700 p-2 rounded w-full" placeholder="Categoria" />
+              <input type="text" value={editedProduct.price} onChange={e => handleInputChange('price', e.target.value)} className="bg-gray-700 p-2 rounded w-full" placeholder="Preço Promocional (R$ 99,90)" />
+              <input type="text" value={editedProduct.originalPrice || ''} onChange={e => handleInputChange('originalPrice', e.target.value)} className="bg-gray-700 p-2 rounded w-full" placeholder="Preço Original (R$ 129,90)" />
                <label className="flex items-center justify-center gap-2 cursor-pointer bg-gray-700 p-2 rounded">
                  <input type="checkbox" checked={editedProduct.isPromotion} onChange={e => handleInputChange('isPromotion', e.target.checked)} className="h-4 w-4 rounded text-pink-500 bg-gray-800 border-purple-600 focus:ring-pink-500" />
                  <span className="text-sm">Promoção</span>
               </label>
            </div>
         </div>
-        <textarea value={editedProduct.description} onChange={e => handleInputChange('description', e.target.value)} className="bg-gray-700 p-2 rounded w-full text-sm" rows={3} placeholder="Descrição"></textarea>
+        <textarea value={editedProduct.description} onChange={e => handleInputChange('description', e.target.value)} className="bg-gray-700 p-2 rounded w-full text-sm" rows={2} placeholder="Descrição Longa"></textarea>
+        <input type="text" value={editedProduct.shortDescription} onChange={e => handleInputChange('shortDescription', e.target.value)} className="bg-gray-700 p-2 rounded w-full text-sm" placeholder="Descrição Curta (Ex: 10% no PIX)" />
         <div className="flex justify-end gap-2">
           <button onClick={handleCancel} className="p-2 text-2xl" title="Cancelar">❌</button>
           <button onClick={handleSave} className="p-2 text-2xl" title="Salvar">✔️</button>
@@ -74,8 +76,8 @@ const AdminProductRow: React.FC<AdminProductRowProps> = ({ product, onUpdate, on
       <img src={product.imageUrl} alt={product.name} className="w-16 h-16 object-cover rounded-md flex-shrink-0" />
       <div className="flex-grow text-center md:text-left">
         <p className="font-bold">{product.name} <span className="text-xs text-gray-400">(SKU: {product.sku})</span></p>
-        <p className="text-pink-400 font-semibold">{product.price} - <span className="text-sm text-gray-300">{product.category}</span></p>
-        <p className="text-xs text-gray-400 mt-1 hidden md:block">{product.description}</p>
+        <p className="text-pink-400 font-semibold">{product.price} {product.originalPrice && <span className="text-gray-400 line-through text-sm ml-2">{product.originalPrice}</span>}</p>
+        <p className="text-xs text-gray-300 mt-1">{product.shortDescription}</p>
       </div>
       <div className="flex items-center gap-2 flex-shrink-0">
         <label htmlFor={`promo-${product.id}`} className="flex items-center cursor-pointer" title="Marcar como promoção">
@@ -84,7 +86,6 @@ const AdminProductRow: React.FC<AdminProductRowProps> = ({ product, onUpdate, on
             <div className={`block w-12 h-6 rounded-full ${product.isPromotion ? 'bg-pink-500' : 'bg-gray-600'}`}></div>
             <div className={`dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${product.isPromotion ? 'transform translate-x-6' : ''}`}></div>
           </div>
-          <span className="ml-2 text-2xl" role="img" aria-label="promo icon">{product.isPromotion ? '⭐' : '⚪'}</span>
         </label>
         <button onClick={() => setIsEditing(true)} className="p-2 text-2xl" title="Editar">✏️</button>
         <button onClick={() => onDelete(product.id)} className="p-2 text-2xl" title="Excluir">🗑️</button>

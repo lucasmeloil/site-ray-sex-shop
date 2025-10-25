@@ -19,9 +19,9 @@ const PromotionsSection: React.FC<PromotionsSectionProps> = ({ products }) => {
             <p className="text-lg text-gray-300 mt-4">Ofertas incríveis que terminam em:</p>
             <Countdown targetDate={promotionEndDate} />
         </div>
-         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {products.map(product => (
-                <ProductCard key={product.id} product={product} variant="catalog" isPromotion={true} />
+                <ProductCard key={product.id} product={product} />
             ))}
         </div>
       </div>

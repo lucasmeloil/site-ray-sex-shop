@@ -1,19 +1,21 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import ProductCard from './components/ProductCard';
 import Pagination from './components/Pagination';
 import type { Product } from './types';
 
 interface CatalogPageProps {
-  initialCategory?: string;
   products: Product[];
+  targetProductId?: number | null;
 }
 
 const ITEMS_PER_PAGE = 12;
 
-const CatalogPage: React.FC<CatalogPageProps> = ({ initialCategory, products }) => {
+const CatalogPage: React.FC<CatalogPageProps> = ({ products, targetProductId }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || 'Todos');
+  const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
   const [searchQuery, setSearchQuery] = useState('');
+  
+  const productRefs = useRef<Record<number, HTMLDivElement | null>>({});
 
   const categories = useMemo(() => ['Todos', ...Array.from(new Set(products.map(p => p.category)))], [products]);
 
@@ -34,6 +36,26 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ initialCategory, products }) 
     
     return tempProducts;
   }, [selectedCategory, products, searchQuery]);
+
+  useEffect(() => {
+    if (targetProductId) {
+      const targetProductIndex = filteredProducts.findIndex(p => p.id === targetProductId);
+      if (targetProductIndex !== -1) {
+        const targetPage = Math.floor(targetProductIndex / ITEMS_PER_PAGE) + 1;
+        setCurrentPage(targetPage);
+        
+        // Scroll to the product after the page has updated
+        setTimeout(() => {
+          const element = productRefs.current[targetProductId];
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            element.classList.add('animate-pulse');
+            setTimeout(() => element.classList.remove('animate-pulse'), 2000);
+          }
+        }, 100);
+      }
+    }
+  }, [targetProductId, filteredProducts]);
   
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -90,14 +112,14 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ initialCategory, products }) 
         </div>
 
         {paginatedProducts.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {paginatedProducts.map((product) => (
-              <ProductCard 
-                key={product.id} 
-                product={product} 
-                variant="catalog" 
-                isPromotion={product.isPromotion}
-              />
+              // FIX: A ref callback function should not return a value. Wrapped the assignment in curly braces to ensure an implicit `undefined` return.
+              <div key={product.id} ref={el => { productRefs.current[product.id] = el; }}>
+                <ProductCard 
+                  product={product} 
+                />
+              </div>
             ))}
           </div>
         ) : (

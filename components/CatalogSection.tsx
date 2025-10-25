@@ -1,6 +1,7 @@
 
 
 
+
 import React from 'react';
 // FIX: In 'constants.ts', the product list is exported as `INITIAL_PRODUCTS`.
 import { INITIAL_PRODUCTS as PRODUCTS } from '../constants';
@@ -16,8 +17,8 @@ const CatalogSection: React.FC = () => {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
           {PRODUCTS.map((product) => (
-            // FIX: Added the missing 'variant' prop to satisfy the ProductCardProps interface.
-            <ProductCard key={product.id} product={product} variant="catalog" />
+            // FIX: Removed the 'variant' prop as it does not exist on ProductCardProps.
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </div>

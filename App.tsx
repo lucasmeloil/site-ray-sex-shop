@@ -29,7 +29,7 @@ const AppContent: React.FC = () => {
   const [isWheelOpen, setIsWheelOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [page, setPage] = useState<'home' | 'catalog' | 'contact' | 'admin'>('home');
-  const [initialCategory, setInitialCategory] = useState<string | undefined>(undefined);
+  const [targetProductId, setTargetProductId] = useState<number | null>(null);
   
   const { clearCart } = useCart();
   
@@ -84,9 +84,12 @@ const AppContent: React.FC = () => {
     return <AgeGate onVerify={handleAgeVerification} />;
   }
 
-  const handleNavigate = (targetPage: 'home' | 'catalog' | 'contact' | 'admin', category?: string) => {
+  const handleNavigate = (targetPage: 'home' | 'catalog' | 'contact' | 'admin', productId?: number) => {
     setPage(targetPage);
-    setInitialCategory(category);
+    setTargetProductId(productId || null);
+    if (targetPage === 'catalog' && !productId) {
+      setTargetProductId(null); // Clear target when just navigating to catalog
+    }
     window.scrollTo(0, 0);
   };
 
@@ -167,7 +170,7 @@ const AppContent: React.FC = () => {
       {page !== 'admin' && <FloatingHearts />}
       {page !== 'admin' && (
         <Header 
-          onNavigate={handleNavigate} 
+          onNavigate={(p) => handleNavigate(p as 'home' | 'catalog' | 'contact')} 
           onCartClick={() => setIsCartOpen(true)} 
           onAdminClick={() => handleNavigate('admin')}
         />
@@ -175,7 +178,7 @@ const AppContent: React.FC = () => {
       
       <main className="relative z-10">
         {page === 'home' && <HomePage onNavigate={handleNavigate} products={products} onWheelClick={() => setIsWheelOpen(true)} />}
-        {page === 'catalog' && <CatalogPage initialCategory={initialCategory} products={products} />}
+        {page === 'catalog' && <CatalogPage products={products} targetProductId={targetProductId} />}
         {page === 'contact' && <ContactPage />}
         {page === 'admin' && renderAdminSection()}
       </main>

@@ -12,6 +12,8 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ onClose, onAdd }) => 
   const [sku, setSku] = useState('');
   const [category, setCategory] = useState('');
   const [price, setPrice] = useState('');
+  const [originalPrice, setOriginalPrice] = useState('');
+  const [shortDescription, setShortDescription] = useState('');
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('https://placehold.co/300x300/ec4899/ffffff?text=Imagem');
   const [isPromotion, setIsPromotion] = useState(false);
@@ -49,30 +51,33 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ onClose, onAdd }) => 
       reader.readAsDataURL(file);
     }
   };
+  
+  const formatPrice = (value: string): string => {
+      if (!value) return '';
+      const numericValue = parseFloat(value.replace(',', '.'));
+      if (isNaN(numericValue)) return '';
+      return `R$ ${numericValue.toFixed(2).replace('.', ',')}`;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    if (!name || !sku || !category || !price || !description) {
-      setError('Todos os campos são obrigatórios.');
+    if (!name || !sku || !category || !price || !description || !shortDescription) {
+      setError('Todos os campos, exceto Preço Original, são obrigatórios.');
       return;
     }
     
-    const numericPrice = parseFloat(price.replace(',', '.'));
-    if (isNaN(numericPrice)) {
-        setError('O preço deve ser um número válido.');
-        return;
-    }
-
     setIsLoading(true);
     try {
       await onAdd({
         name,
         sku,
         category,
-        price: `R$ ${numericPrice.toFixed(2).replace('.', ',')}`,
+        price: formatPrice(price),
+        originalPrice: originalPrice ? formatPrice(originalPrice) : undefined,
         description,
+        shortDescription,
         imageUrl,
         isPromotion,
       });
@@ -121,18 +126,28 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ onClose, onAdd }) => 
                 <label htmlFor="sku" className="block text-sm font-medium text-gray-300 mb-1">SKU</label>
                 <input type="text" id="sku" value={sku} onChange={e => setSku(e.target.value)} className="w-full bg-gray-800 p-2 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" disabled={isLoading} />
               </div>
-               <div>
-                <label htmlFor="price" className="block text-sm font-medium text-gray-300 mb-1">Preço (R$)</label>
-                <input type="text" id="price" value={price} onChange={e => setPrice(e.target.value)} className="w-full bg-gray-800 p-2 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" placeholder="199,90" inputMode="decimal" disabled={isLoading} />
+              <div>
+                <label htmlFor="category" className="block text-sm font-medium text-gray-300 mb-1">Categoria</label>
+                <input type="text" id="category" value={category} onChange={e => setCategory(e.target.value)} className="w-full bg-gray-800 p-2 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" disabled={isLoading} />
               </div>
             </div>
-            <div>
-              <label htmlFor="category" className="block text-sm font-medium text-gray-300 mb-1">Categoria</label>
-              <input type="text" id="category" value={category} onChange={e => setCategory(e.target.value)} className="w-full bg-gray-800 p-2 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" disabled={isLoading} />
+            <div className="grid grid-cols-2 gap-4">
+               <div>
+                <label htmlFor="price" className="block text-sm font-medium text-gray-300 mb-1">Preço (R$)</label>
+                <input type="text" id="price" value={price} onChange={e => setPrice(e.target.value)} className="w-full bg-gray-800 p-2 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" placeholder="99,90" inputMode="decimal" disabled={isLoading} />
+              </div>
+              <div>
+                <label htmlFor="originalPrice" className="block text-sm font-medium text-gray-300 mb-1">Preço Original (Opcional)</label>
+                <input type="text" id="originalPrice" value={originalPrice} onChange={e => setOriginalPrice(e.target.value)} className="w-full bg-gray-800 p-2 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" placeholder="129,90" inputMode="decimal" disabled={isLoading} />
+              </div>
             </div>
              <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-1">Descrição</label>
-              <textarea id="description" value={description} onChange={e => setDescription(e.target.value)} rows={3} className="w-full bg-gray-800 p-2 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" disabled={isLoading}></textarea>
+              <label htmlFor="shortDescription" className="block text-sm font-medium text-gray-300 mb-1">Descrição Curta</label>
+              <input type="text" id="shortDescription" value={shortDescription} onChange={e => setShortDescription(e.target.value)} className="w-full bg-gray-800 p-2 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" placeholder="Ex: 10% de desconto no PIX" disabled={isLoading} />
+            </div>
+             <div>
+              <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-1">Descrição Longa</label>
+              <textarea id="description" value={description} onChange={e => setDescription(e.target.value)} rows={2} className="w-full bg-gray-800 p-2 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" disabled={isLoading}></textarea>
             </div>
             <div>
                 <label className="flex items-center gap-2 cursor-pointer">
