@@ -1,0 +1,35 @@
+import type { Product, NavLink } from './types';
+
+export const NAV_LINKS: NavLink[] = [
+  { name: 'Home', id: 'home' },
+  { name: 'Catálogo', id: 'catalog' },
+  { name: 'Contato', id: 'contact' },
+];
+
+export const INITIAL_PRODUCTS: Product[] = [
+  { id: 1, name: 'Vibrador Pulsar', category: 'Vibradores', price: 'R$ 299,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Vibrador potente com múltiplos padrões de pulsação.', sku: 'RAY-001', isPromotion: true },
+  { id: 2, name: 'Kit Sedução Neon', category: 'Kits', price: 'R$ 199,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Kit completo para noites inesquecíveis.', sku: 'RAY-002', isPromotion: false },
+  { id: 3, name: 'Óleo Deslizante Nebula', category: 'Lubrificantes', price: 'R$ 79,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Lubrificante à base de água com efeito duradouro.', sku: 'RAY-003', isPromotion: false },
+  { id: 4, name: 'Algemas de Veludo Cyber', category: 'Acessórios', price: 'R$ 129,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Algemas macias e seguras para jogos de dominação.', sku: 'RAY-004', isPromotion: false },
+  { id: 5, name: 'Chicote Pluma Negra', category: 'Acessórios', price: 'R$ 149,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Chicote com plumas para sensações suaves e excitantes.', sku: 'RAY-005', isPromotion: false },
+  { id: 6, name: 'Ovo Vibratório Remoto', category: 'Vibradores', price: 'R$ 349,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Ovo vibratório controlado por controle remoto sem fio.', sku: 'RAY-006', isPromotion: false },
+  { id: 7, name: 'Lingerie Tech Fatale', category: 'Lingeries', price: 'R$ 249,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Lingerie sensual com detalhes tecnológicos.', sku: 'RAY-007', isPromotion: true },
+  { id: 8, name: 'Filme Adulto VR', category: 'Mídias', price: 'R$ 99,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Experiência imersiva de realidade virtual.', sku: 'RAY-008', isPromotion: false },
+  { id: 9, name: 'Plug Anal Holográfico', category: 'Acessórios', price: 'R$ 189,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Plug com design moderno e material seguro.', sku: 'RAY-009', isPromotion: false },
+  { id: 10, name: 'Fantasia Androide', category: 'Fantasias', price: 'R$ 499,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Fantasia futurista para roleplay.', sku: 'RAY-010', isPromotion: true },
+  { id: 11, name: 'Gel Estimulante Eletrizante', category: 'Lubrificantes', price: 'R$ 89,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Gel que proporciona sensações de aquecimento e vibração.', sku: 'RAY-011', isPromotion: false },
+  { id: 12, name: 'Venda com Luzes de LED', category: 'Acessórios', price: 'R$ 99,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Venda para os olhos com uma experiência única.', sku: 'RAY-012', isPromotion: true },
+  { id: 13, name: 'Vibrador Duplo Glitch', category: 'Vibradores', price: 'R$ 459,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Estimulação dupla para clitóris e ponto G.', sku: 'RAY-013', isPromotion: false },
+  { id: 14, name: 'Kit Shibari Neon', category: 'Kits', price: 'R$ 229,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Cordas de algodão macio que brilham no escuro.', sku: 'RAY-014', isPromotion: false },
+  { id: 15, name: 'Dados Eróticos Virtuais', category: 'Mídias', price: 'R$ 49,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'App de dados para jogos eróticos.', sku: 'RAY-015', isPromotion: false },
+  { id: 16, name: 'Body Chain Lumina', category: 'Lingeries', price: 'R$ 179,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Corrente corporal para adornar e seduzir.', sku: 'RAY-016', isPromotion: false },
+  { id: 17, name: 'Fantasia de Hacker Sedutora', category: 'Fantasias', price: 'R$ 450,00', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Fantasia completa com tema de hacker.', sku: 'RAY-017', isPromotion: false },
+  { id: 18, name: 'Microfone para Gemidos ASMR', category: 'Mídias', price: 'R$ 320,00', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Microfone de alta sensibilidade para gravações íntimas.', sku: 'RAY-018', isPromotion: false },
+  { id: 19, name: 'Vibrador Sônico', category: 'Vibradores', price: 'R$ 599,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Tecnologia sônica para orgasmos intensos.', sku: 'RAY-019', isPromotion: false },
+  { id: 20, name: 'Kit de Massagem Sensual', category: 'Kits', price: 'R$ 259,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Inclui óleo de massagem, velas e acessórios.', sku: 'RAY-020', isPromotion: false },
+  { id: 21, name: 'Máscara de Gato Neon', category: 'Fantasias', price: 'R$ 159,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Máscara com luzes de neon para festas e jogos.', sku: 'RAY-021', isPromotion: false },
+  { id: 22, name: 'Capa para Pênis Texturizada', category: 'Acessórios', price: 'R$ 89,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Aumenta o prazer com texturas estimulantes.', sku: 'RAY-022', isPromotion: false },
+  { id: 23, name: 'Lubrificante Sabor Energético', category: 'Lubrificantes', price: 'R$ 69,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Lubrificante comestível com sabor de bebida energética.', sku: 'RAY-023', isPromotion: false },
+  { id: 24, name: 'Meia-calça Arrastão Pixel', category: 'Lingeries', price: 'R$ 99,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Meia-calça com design moderno e arrojado.', sku: 'RAY-024', isPromotion: false },
+  { id: 25, name: 'Vibrador de Dedo USB', category: 'Vibradores', price: 'R$ 129,90', imageUrl: 'https://placehold.co/300x300/ec4899/ffffff?text=Produto', description: 'Discreto e potente, recarregável via USB.', sku: 'RAY-025', isPromotion: false }
+];

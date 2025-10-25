@@ -1,0 +1,54 @@
+import React from 'react';
+import HeroSection from './components/HeroSection';
+import AboutSection from './components/AboutSection';
+import ProductCard from './components/ProductCard';
+import PromotionsSection from './components/PromotionsSection';
+import PrizeWheelTrigger from './components/PrizeWheelTrigger';
+import type { Product } from './types';
+
+interface HomePageProps {
+  onNavigate: (page: 'catalog', category?: string) => void;
+  products: Product[];
+  onWheelClick: () => void;
+}
+
+const HomePage: React.FC<HomePageProps> = ({ onNavigate, products, onWheelClick }) => {
+  const featuredProducts = products.slice(0, 8);
+  const promotionProducts = products.filter(p => p.isPromotion);
+
+  const handleCategoryClick = (category: string) => {
+    onNavigate('catalog', category);
+  };
+
+  return (
+    <>
+      <HeroSection onNavigate={onNavigate} />
+
+      {promotionProducts.length > 0 && <PromotionsSection products={promotionProducts} />}
+      
+      <section id="featured" className="py-20 px-4 sm:px-6 lg:px-8 bg-black">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-pink-400">Produtos em Destaque</h2>
+            <div className="mt-2 w-24 h-1 bg-purple-600 mx-auto rounded-full"></div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
+            {featuredProducts.map((product) => (
+              <ProductCard 
+                key={product.id} 
+                product={product} 
+                variant="featured"
+                onCategoryClick={handleCategoryClick}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <AboutSection />
+      <PrizeWheelTrigger onClick={onWheelClick} />
+    </>
+  );
+};
+
+export default HomePage;
