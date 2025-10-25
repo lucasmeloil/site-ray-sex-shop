@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 
-const LOGO_URL = 'https://i.imgur.com/eJryB2w.png';
+const LOGO_URL = 'https://image2url.com/images/1761343291020-59b1ead0-0c00-4f56-ade4-696d390a6c7b.png';
 
 interface LoginPageProps {
   onLogin: (email: string, pass: string) => Promise<void>;
@@ -33,7 +34,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     <div className="min-h-screen flex items-center justify-center bg-gray-900 bg-grid-purple-900/10 p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-            <img src={LOGO_URL} alt="Ray Sexshop Logo" className="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-pink-500/50" />
+            <img src={LOGO_URL} alt="Ray Sexshop Logo" className="w-auto h-20 mx-auto mb-4" />
             <h1 className="text-3xl font-bold text-pink-400">Acesso Administrativo</h1>
         </div>
         <form 

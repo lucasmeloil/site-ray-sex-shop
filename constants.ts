@@ -1,9 +1,13 @@
-import type { Product, NavLink } from './types';
+import type { Product, NavLink, AdminUser } from './types';
 
 export const NAV_LINKS: NavLink[] = [
   { name: 'Home', id: 'home' },
   { name: 'Catálogo', id: 'catalog' },
   { name: 'Contato', id: 'contact' },
+];
+
+export const INITIAL_ADMIN_USERS: AdminUser[] = [
+    { id: 1, email: 'ray@sexshop.com.br', password: 'admin123' }
 ];
 
 export const INITIAL_PRODUCTS: Product[] = [

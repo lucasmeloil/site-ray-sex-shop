@@ -15,11 +15,8 @@ import LoginPage from './LoginPage';
 import PrizeWheel from './components/PrizeWheel';
 import AddProductModal from './components/AddProductModal';
 import CheckoutModal from './components/CheckoutModal';
-import { INITIAL_PRODUCTS } from './constants';
-import type { Product } from './types';
-
-const ADMIN_EMAIL = 'ray@sexshop.com.br';
-const ADMIN_PASS = 'admin123';
+import { INITIAL_PRODUCTS, INITIAL_ADMIN_USERS } from './constants';
+import type { Product, AdminUser } from './types';
 
 const AppContent: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -45,22 +42,31 @@ const AppContent: React.FC = () => {
     return INITIAL_PRODUCTS;
   });
   
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [adminUsers, setAdminUsers] = useState<AdminUser[]>(() => {
+    try {
+        const savedUsers = localStorage.getItem('ray_sexshop_admins');
+        if (savedUsers) {
+            return JSON.parse(savedUsers);
+        }
+    } catch (error) {
+        console.error("Failed to parse admin users from localStorage", error);
+    }
+    return INITIAL_ADMIN_USERS;
+  });
+
+  const [loggedInUser, setLoggedInUser] = useState<AdminUser | null>(null);
 
   useEffect(() => {
     const ageVerified = sessionStorage.getItem('ageVerified');
-    if (ageVerified === 'true') {
-      setIsAgeVerified(true);
-    }
+    if (ageVerified === 'true') setIsAgeVerified(true);
     
-    const adminLoggedIn = sessionStorage.getItem('adminLoggedIn');
-    if (adminLoggedIn === 'true') {
-        setIsLoggedIn(true);
+    const loggedInUserEmail = sessionStorage.getItem('adminLoggedIn');
+    if (loggedInUserEmail) {
+        const user = adminUsers.find(u => u.email === loggedInUserEmail);
+        if (user) setLoggedInUser(user);
     }
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
+    setTimeout(() => setIsLoading(false), 1500);
   }, []);
 
   useEffect(() => {
@@ -71,14 +77,20 @@ const AppContent: React.FC = () => {
     }
   }, [products]);
 
+  useEffect(() => {
+    try {
+        localStorage.setItem('ray_sexshop_admins', JSON.stringify(adminUsers));
+    } catch (error) {
+        console.error("Failed to save admin users to localStorage", error);
+    }
+  }, [adminUsers]);
+
   const handleAgeVerification = () => {
     sessionStorage.setItem('ageVerified', 'true');
     setIsAgeVerified(true);
   };
   
-  if (isLoading) {
-    return <Loader />;
-  }
+  if (isLoading) return <Loader />;
 
   if (!isAgeVerified && page !== 'admin') {
     return <AgeGate onVerify={handleAgeVerification} />;
@@ -87,9 +99,7 @@ const AppContent: React.FC = () => {
   const handleNavigate = (targetPage: 'home' | 'catalog' | 'contact' | 'admin', productId?: number) => {
     setPage(targetPage);
     setTargetProductId(productId || null);
-    if (targetPage === 'catalog' && !productId) {
-      setTargetProductId(null); // Clear target when just navigating to catalog
-    }
+    if (targetPage === 'catalog' && !productId) setTargetProductId(null);
     window.scrollTo(0, 0);
   };
 
@@ -122,9 +132,10 @@ const AppContent: React.FC = () => {
   const handleLogin = (email: string, pass: string): Promise<void> => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
-          sessionStorage.setItem('adminLoggedIn', 'true');
-          setIsLoggedIn(true);
+        const user = adminUsers.find(u => u.email === email && u.password === pass);
+        if (user) {
+          sessionStorage.setItem('adminLoggedIn', user.email);
+          setLoggedInUser(user);
           resolve();
         } else {
           reject(new Error('Credenciais inválidas'));
@@ -135,8 +146,17 @@ const AppContent: React.FC = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem('adminLoggedIn');
-    setIsLoggedIn(false);
+    setLoggedInUser(null);
     setPage('home');
+  };
+
+  const handleAddAdmin = (newAdmin: Omit<AdminUser, 'id'>) => {
+      const newId = adminUsers.length > 0 ? Math.max(...adminUsers.map(u => u.id)) + 1 : 1;
+      setAdminUsers(prev => [...prev, { ...newAdmin, id: newId }]);
+  };
+
+  const handleUpdateAdminPassword = (userId: number, newPassword: string) => {
+      setAdminUsers(prev => prev.map(u => u.id === userId ? { ...u, password: newPassword } : u));
   };
 
   const handleOpenCheckout = () => {
@@ -151,7 +171,7 @@ const AppContent: React.FC = () => {
   };
 
   const renderAdminSection = () => {
-    if (isLoggedIn) {
+    if (loggedInUser) {
       return (
         <AdminPage
           products={products}
@@ -159,6 +179,10 @@ const AppContent: React.FC = () => {
           onDeleteProduct={handleDeleteProduct}
           onOpenAddModal={() => setIsAddModalOpen(true)}
           onLogout={handleLogout}
+          adminUsers={adminUsers}
+          onAddAdmin={handleAddAdmin}
+          onUpdateAdminPassword={handleUpdateAdminPassword}
+          currentUser={loggedInUser}
         />
       );
     }
@@ -193,12 +217,10 @@ const AppContent: React.FC = () => {
   );
 };
 
-
 const App: React.FC = () => (
   <CartProvider>
     <AppContent />
   </CartProvider>
 );
-
 
 export default App;

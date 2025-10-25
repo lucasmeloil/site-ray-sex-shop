@@ -30,3 +30,9 @@ export interface CartContextType {
   itemCount: number;
   totalPrice: number;
 }
+
+export interface AdminUser {
+  id: number;
+  email: string;
+  password: string;
+}
