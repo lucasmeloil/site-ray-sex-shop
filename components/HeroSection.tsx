@@ -14,7 +14,16 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onNavigate }) => {
       <div className="relative z-10 container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center justify-center md:justify-between gap-8 md:gap-12">
           
-          {/* Text content (ordered first for desktop) */}
+          {/* Image container (ordered first for mobile) */}
+          <div className="w-full md:w-5/12 md:order-2">
+            <img 
+              src={BANNER_URL} 
+              alt="Ray Sexshop Banner" 
+              className="w-full max-w-[14rem] mx-auto md:max-w-full rounded-lg shadow-2xl shadow-purple-500/30" 
+            />
+          </div>
+
+          {/* Text content (ordered second for mobile) */}
           <div className="text-center md:text-left md:w-6/12 md:order-1">
             <h1 className="text-5xl md:text-6xl font-extrabold tracking-tighter mb-4 text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400 drop-shadow-[0_0_10px_rgba(236,72,153,0.7)]">
               Explore Seus Desejos
@@ -30,15 +39,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onNavigate }) => {
             >
               Ver Catálogo
             </button>
-          </div>
-
-          {/* Image container (ordered second for desktop) */}
-          <div className="w-full md:w-5/12 md:order-2 mt-6 md:mt-0">
-            <img 
-              src={BANNER_URL} 
-              alt="Ray Sexshop Banner" 
-              className="w-full max-w-[14rem] mx-auto md:max-w-full rounded-lg shadow-2xl shadow-purple-500/30" 
-            />
           </div>
 
         </div>
