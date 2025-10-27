@@ -39,8 +39,8 @@ const Countdown: React.FC<CountdownProps> = ({ targetDate }) => {
   const timeComponents = Object.entries(timeLeft).map(([interval, value]) => {
     return (
       <div key={interval} className="flex flex-col items-center">
-        <span className="text-3xl md:text-5xl font-bold text-white tracking-wider">{String(value).padStart(2, '0')}</span>
-        <span className="text-xs md:text-sm uppercase text-gray-400">{interval}</span>
+        <span className="text-3xl md:text-5xl font-bold text-gray-900 tracking-wider">{String(value).padStart(2, '0')}</span>
+        <span className="text-xs md:text-sm uppercase text-gray-500">{interval}</span>
       </div>
     );
   });

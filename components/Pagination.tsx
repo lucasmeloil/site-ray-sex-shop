@@ -16,7 +16,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
           <button
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className="px-3 py-2 rounded-md bg-gray-800/50 border border-purple-800 text-gray-300 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-3 py-2 rounded-md bg-white border border-red-200 text-gray-600 hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Anterior
           </button>
@@ -25,10 +25,10 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
           <li key={page}>
             <button
               onClick={() => onPageChange(page)}
-              className={`w-10 h-10 rounded-md border border-purple-800 font-bold transition-colors
+              className={`w-10 h-10 rounded-md border border-red-200 font-bold transition-colors
                 ${currentPage === page 
-                  ? 'bg-pink-500 text-white border-pink-500 shadow-[0_0_10px_rgba(236,72,153,0.7)]' 
-                  : 'bg-gray-800/50 text-gray-300 hover:bg-purple-700'
+                  ? 'bg-red-500 text-white border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]' 
+                  : 'bg-white text-gray-600 hover:bg-red-100'
                 }`}
             >
               {page}
@@ -39,7 +39,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
           <button
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="px-3 py-2 rounded-md bg-gray-800/50 border border-purple-800 text-gray-300 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-3 py-2 rounded-md bg-white border border-red-200 text-gray-600 hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Próximo
           </button>

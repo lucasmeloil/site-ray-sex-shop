@@ -82,21 +82,21 @@ Aguardando as instruções para o pagamento. Obrigado! 😊
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-4" onClick={onClose}>
       <div
-        className="bg-gray-900 border-2 border-purple-800 rounded-2xl shadow-2xl shadow-purple-500/30 p-6 md:p-8 max-w-lg w-full text-center relative max-h-[90vh] overflow-y-auto"
+        className="bg-white border-2 border-red-200 rounded-2xl shadow-2xl shadow-red-500/20 p-6 md:p-8 max-w-lg w-full text-center relative max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <button onClick={onClose} className="absolute top-4 right-4 text-2xl text-gray-400 hover:text-white">❌</button>
-        <h2 className="text-3xl font-bold text-pink-400 mb-6">Finalizar Pedido</h2>
+        <button onClick={onClose} className="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-900">❌</button>
+        <h2 className="text-3xl font-bold text-red-500 mb-6">Finalizar Pedido</h2>
         
         <form onSubmit={handleSubmit} className="space-y-4 text-left">
-          <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Nome Completo*" className="w-full bg-gray-800 p-3 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" />
-          <input type="text" value={address} onChange={e => setAddress(e.target.value)} placeholder="Endereço Completo para Entrega*" className="w-full bg-gray-800 p-3 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" />
-          <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Telefone com DDD*" className="w-full bg-gray-800 p-3 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" />
-          <input type="text" value={cpf} onChange={e => setCpf(e.target.value)} placeholder="CPF (Opcional)" className="w-full bg-gray-800 p-3 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" />
+          <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Nome Completo*" className="w-full bg-gray-100 p-3 rounded border border-red-300 focus:ring-red-500 focus:border-red-500" />
+          <input type="text" value={address} onChange={e => setAddress(e.target.value)} placeholder="Endereço Completo para Entrega*" className="w-full bg-gray-100 p-3 rounded border border-red-300 focus:ring-red-500 focus:border-red-500" />
+          <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Telefone com DDD*" className="w-full bg-gray-100 p-3 rounded border border-red-300 focus:ring-red-500 focus:border-red-500" />
+          <input type="text" value={cpf} onChange={e => setCpf(e.target.value)} placeholder="CPF (Opcional)" className="w-full bg-gray-100 p-3 rounded border border-red-300 focus:ring-red-500 focus:border-red-500" />
           
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Forma de Pagamento</label>
-            <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className="w-full bg-gray-800 p-3 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500">
+            <label className="block text-sm font-medium text-gray-600 mb-2">Forma de Pagamento</label>
+            <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className="w-full bg-gray-100 p-3 rounded border border-red-300 focus:ring-red-500 focus:border-red-500">
               <option>PIX</option>
               <option>Cartão de Crédito</option>
               <option>Cartão de Débito</option>
@@ -105,14 +105,14 @@ Aguardando as instruções para o pagamento. Obrigado! 😊
           </div>
           
           {paymentMethod === 'Dinheiro' && (
-            <input type="text" value={change} onChange={e => setChange(e.target.value)} placeholder="Precisa de troco para quanto?" className="w-full bg-gray-800 p-3 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" />
+            <input type="text" value={change} onChange={e => setChange(e.target.value)} placeholder="Precisa de troco para quanto?" className="w-full bg-gray-100 p-3 rounded border border-red-300 focus:ring-red-500 focus:border-red-500" />
           )}
 
-          {error && <p className="text-red-400 text-sm text-center">{error}</p>}
+          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
           <button
             type="submit"
-            className="w-full bg-purple-600 text-white font-bold py-3 rounded-full text-lg uppercase tracking-wider hover:bg-purple-700 transition-all duration-300 transform hover:scale-105 shadow-[0_0_15px_rgba(147,51,234,0.5)] mt-4"
+            className="w-full bg-red-600 text-white font-bold py-3 rounded-full text-lg uppercase tracking-wider hover:bg-red-700 transition-all duration-300 transform hover:scale-105 shadow-[0_0_15px_rgba(239,68,68,0.4)] mt-4"
           >
             Confirmar e Enviar Pedido
           </button>

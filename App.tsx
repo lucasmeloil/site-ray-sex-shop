@@ -16,7 +16,7 @@ import PrizeWheel from './components/PrizeWheel';
 import AddProductModal from './components/AddProductModal';
 import CheckoutModal from './components/CheckoutModal';
 import { INITIAL_PRODUCTS, INITIAL_ADMIN_USERS } from './constants';
-import type { Product, AdminUser } from './types';
+import type { Product, AdminUser, NavLink } from './types';
 
 const AppContent: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -96,11 +96,21 @@ const AppContent: React.FC = () => {
     return <AgeGate onVerify={handleAgeVerification} />;
   }
 
-  const handleNavigate = (targetPage: 'home' | 'catalog' | 'contact' | 'admin', productId?: number) => {
-    setPage(targetPage);
-    setTargetProductId(productId || null);
-    if (targetPage === 'catalog' && !productId) setTargetProductId(null);
-    window.scrollTo(0, 0);
+  const handleNavigate = (targetPage: NavLink['id'] | 'admin', productId?: number) => {
+    if (targetPage === 'about') {
+      setPage('home');
+      setTimeout(() => {
+        const aboutSection = document.getElementById('about');
+        if (aboutSection) {
+            aboutSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      setPage(targetPage as 'home' | 'catalog' | 'contact' | 'admin');
+      setTargetProductId(productId || null);
+      if (targetPage === 'catalog' && !productId) setTargetProductId(null);
+      window.scrollTo(0, 0);
+    }
   };
 
   const handleUpdateProduct = (updatedProduct: Product) => {
@@ -190,11 +200,11 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="bg-black text-white min-h-screen font-sans">
+    <div className="bg-gray-100 text-gray-800 min-h-screen font-sans">
       {page !== 'admin' && <FloatingHearts />}
       {page !== 'admin' && (
         <Header 
-          onNavigate={(p) => handleNavigate(p as 'home' | 'catalog' | 'contact')} 
+          onNavigate={(p) => handleNavigate(p)} 
           onCartClick={() => setIsCartOpen(true)} 
           onAdminClick={() => handleNavigate('admin')}
         />

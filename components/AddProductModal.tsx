@@ -1,4 +1,5 @@
 
+
 import React, { useState, useRef, useEffect } from 'react';
 import type { Product } from '../types';
 
@@ -15,7 +16,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ onClose, onAdd }) => 
   const [originalPrice, setOriginalPrice] = useState('');
   const [shortDescription, setShortDescription] = useState('');
   const [description, setDescription] = useState('');
-  const [imageUrl, setImageUrl] = useState('https://placehold.co/300x300/ec4899/ffffff?text=Imagem');
+  const [imageUrl, setImageUrl] = useState('https://placehold.co/300x300/ef4444/ffffff?text=Imagem');
   const [isPromotion, setIsPromotion] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -92,17 +93,17 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ onClose, onAdd }) => 
     <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-4" onClick={onClose}>
       <div
         ref={modalRef}
-        className="bg-gray-900 border-2 border-purple-800 rounded-2xl shadow-2xl shadow-purple-500/30 p-6 md:p-8 max-w-4xl w-full text-center relative max-h-[90vh] overflow-y-auto"
+        className="bg-white border-2 border-red-200 rounded-2xl shadow-2xl shadow-red-500/20 p-6 md:p-8 max-w-4xl w-full text-center relative max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <button onClick={onClose} className="absolute top-4 right-4 text-2xl text-gray-400 hover:text-white">❌</button>
-        <h2 className="text-3xl font-bold text-pink-400 mb-6">Adicionar Novo Produto</h2>
+        <button onClick={onClose} className="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-900">❌</button>
+        <h2 className="text-3xl font-bold text-red-500 mb-6">Adicionar Novo Produto</h2>
         
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 text-left">
           {/* Image Column */}
           <div className="flex flex-col items-center justify-center gap-4 row-start-2 md:row-start-1">
-            <img src={imageUrl} alt="Preview" className="w-48 h-48 object-cover rounded-lg border-2 border-purple-700" />
-            <label htmlFor="image-upload" className="cursor-pointer text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700">
+            <img src={imageUrl} alt="Preview" className="w-48 h-48 object-cover rounded-lg border-2 border-red-300" />
+            <label htmlFor="image-upload" className="cursor-pointer text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-500 file:text-white hover:file:bg-red-600">
               Selecionar Imagem
             </label>
             <input 
@@ -118,52 +119,52 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ onClose, onAdd }) => 
           {/* Fields Column */}
           <div className="space-y-4 row-start-1 md:row-start-1">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">Nome do Produto</label>
-              <input type="text" id="name" value={name} onChange={e => setName(e.target.value)} className="w-full bg-gray-800 p-2 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" disabled={isLoading} />
+              <label htmlFor="name" className="block text-sm font-medium text-gray-600 mb-1">Nome do Produto</label>
+              <input type="text" id="name" value={name} onChange={e => setName(e.target.value)} className="w-full bg-gray-100 p-2 rounded border border-red-300 focus:ring-red-500 focus:border-red-500" disabled={isLoading} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="sku" className="block text-sm font-medium text-gray-300 mb-1">SKU</label>
-                <input type="text" id="sku" value={sku} onChange={e => setSku(e.target.value)} className="w-full bg-gray-800 p-2 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" disabled={isLoading} />
+                <label htmlFor="sku" className="block text-sm font-medium text-gray-600 mb-1">SKU</label>
+                <input type="text" id="sku" value={sku} onChange={e => setSku(e.target.value)} className="w-full bg-gray-100 p-2 rounded border border-red-300 focus:ring-red-500 focus:border-red-500" disabled={isLoading} />
               </div>
               <div>
-                <label htmlFor="category" className="block text-sm font-medium text-gray-300 mb-1">Categoria</label>
-                <input type="text" id="category" value={category} onChange={e => setCategory(e.target.value)} className="w-full bg-gray-800 p-2 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" disabled={isLoading} />
+                <label htmlFor="category" className="block text-sm font-medium text-gray-600 mb-1">Categoria</label>
+                <input type="text" id="category" value={category} onChange={e => setCategory(e.target.value)} className="w-full bg-gray-100 p-2 rounded border border-red-300 focus:ring-red-500 focus:border-red-500" disabled={isLoading} />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
                <div>
-                <label htmlFor="price" className="block text-sm font-medium text-gray-300 mb-1">Preço (R$)</label>
-                <input type="text" id="price" value={price} onChange={e => setPrice(e.target.value)} className="w-full bg-gray-800 p-2 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" placeholder="99,90" inputMode="decimal" disabled={isLoading} />
+                <label htmlFor="price" className="block text-sm font-medium text-gray-600 mb-1">Preço (R$)</label>
+                <input type="text" id="price" value={price} onChange={e => setPrice(e.target.value)} className="w-full bg-gray-100 p-2 rounded border border-red-300 focus:ring-red-500 focus:border-red-500" placeholder="99,90" inputMode="decimal" disabled={isLoading} />
               </div>
               <div>
-                <label htmlFor="originalPrice" className="block text-sm font-medium text-gray-300 mb-1">Preço Original (Opcional)</label>
-                <input type="text" id="originalPrice" value={originalPrice} onChange={e => setOriginalPrice(e.target.value)} className="w-full bg-gray-800 p-2 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" placeholder="129,90" inputMode="decimal" disabled={isLoading} />
+                <label htmlFor="originalPrice" className="block text-sm font-medium text-gray-600 mb-1">Preço Original (Opcional)</label>
+                <input type="text" id="originalPrice" value={originalPrice} onChange={e => setOriginalPrice(e.target.value)} className="w-full bg-gray-100 p-2 rounded border border-red-300 focus:ring-red-500 focus:border-red-500" placeholder="129,90" inputMode="decimal" disabled={isLoading} />
               </div>
             </div>
              <div>
-              <label htmlFor="shortDescription" className="block text-sm font-medium text-gray-300 mb-1">Descrição Curta</label>
-              <input type="text" id="shortDescription" value={shortDescription} onChange={e => setShortDescription(e.target.value)} className="w-full bg-gray-800 p-2 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" placeholder="Ex: 10% de desconto no PIX" disabled={isLoading} />
+              <label htmlFor="shortDescription" className="block text-sm font-medium text-gray-600 mb-1">Descrição Curta</label>
+              <input type="text" id="shortDescription" value={shortDescription} onChange={e => setShortDescription(e.target.value)} className="w-full bg-gray-100 p-2 rounded border border-red-300 focus:ring-red-500 focus:border-red-500" placeholder="Ex: 10% de desconto no PIX" disabled={isLoading} />
             </div>
              <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-1">Descrição Longa</label>
-              <textarea id="description" value={description} onChange={e => setDescription(e.target.value)} rows={2} className="w-full bg-gray-800 p-2 rounded border border-purple-700 focus:ring-pink-500 focus:border-pink-500" disabled={isLoading}></textarea>
+              <label htmlFor="description" className="block text-sm font-medium text-gray-600 mb-1">Descrição Longa</label>
+              <textarea id="description" value={description} onChange={e => setDescription(e.target.value)} rows={2} className="w-full bg-gray-100 p-2 rounded border border-red-300 focus:ring-red-500 focus:border-red-500" disabled={isLoading}></textarea>
             </div>
             <div>
                 <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={isPromotion} onChange={e => setIsPromotion(e.target.checked)} className="h-4 w-4 rounded text-pink-500 bg-gray-800 border-purple-600 focus:ring-pink-500" />
-                    <span className="text-sm font-medium text-gray-300">Produto em Promoção</span>
+                    <input type="checkbox" checked={isPromotion} onChange={e => setIsPromotion(e.target.checked)} className="h-4 w-4 rounded text-red-500 bg-gray-100 border-red-300 focus:ring-red-500" />
+                    <span className="text-sm font-medium text-gray-600">Produto em Promoção</span>
                 </label>
             </div>
           </div>
           
           {/* Footer */}
           <div className="md:col-span-2">
-            {error && <p className="text-red-400 text-sm text-center my-4">{error}</p>}
+            {error && <p className="text-red-500 text-sm text-center my-4">{error}</p>}
             <button 
               type="submit"
               disabled={isLoading}
-              className="w-full bg-pink-500 text-white font-bold py-3 px-6 rounded-full flex items-center justify-center gap-3 transition-all duration-300 hover:bg-pink-600 transform hover:scale-105 disabled:bg-pink-800 disabled:scale-100 disabled:cursor-wait mt-4"
+              className="w-full bg-red-500 text-white font-bold py-3 px-6 rounded-full flex items-center justify-center gap-3 transition-all duration-300 hover:bg-red-600 transform hover:scale-105 disabled:bg-red-300 disabled:scale-100 disabled:cursor-wait mt-4"
             >
               {isLoading ? (
                 <>

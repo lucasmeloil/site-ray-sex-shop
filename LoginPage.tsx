@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 
 const LOGO_URL = 'https://image2url.com/images/1761343291020-59b1ead0-0c00-4f56-ade4-696d390a6c7b.png';
@@ -31,48 +32,48 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 bg-grid-purple-900/10 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
             <img src={LOGO_URL} alt="Ray Sexshop Logo" className="w-auto h-20 mx-auto mb-4" />
-            <h1 className="text-3xl font-bold text-pink-400">Acesso Administrativo</h1>
+            <h1 className="text-3xl font-bold text-red-500">Acesso Administrativo</h1>
         </div>
         <form 
           onSubmit={handleSubmit}
-          className="bg-gray-900/80 backdrop-blur-md p-8 rounded-xl border border-purple-800 shadow-2xl shadow-purple-500/20 space-y-6"
+          className="bg-white/80 backdrop-blur-md p-8 rounded-xl border border-red-200 shadow-2xl shadow-red-500/10 space-y-6"
         >
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">E-mail</label>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-600 mb-2">E-mail</label>
             <input 
               type="email"
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-gray-800 border border-purple-700 rounded-md p-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all"
+              className="w-full bg-gray-200 border border-red-300 rounded-md p-3 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all"
               placeholder="ray@sexshop.com.br"
               disabled={isLoading}
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">Senha</label>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-600 mb-2">Senha</label>
             <input 
               type="password"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-gray-800 border border-purple-700 rounded-md p-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all"
+              className="w-full bg-gray-200 border border-red-300 rounded-md p-3 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all"
               placeholder="••••••••"
               disabled={isLoading}
             />
           </div>
 
-          {error && <p className="text-red-400 text-sm text-center">{error}</p>}
+          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
           <div>
             <button 
               type="submit"
               disabled={isLoading}
-              className="w-full bg-pink-500 text-white font-bold py-3 px-6 rounded-full flex items-center justify-center gap-3 transition-all duration-300 hover:bg-pink-600 transform hover:scale-105 disabled:bg-pink-800 disabled:scale-100 disabled:cursor-wait"
+              className="w-full bg-red-500 text-white font-bold py-3 px-6 rounded-full flex items-center justify-center gap-3 transition-all duration-300 hover:bg-red-600 transform hover:scale-105 disabled:bg-red-300 disabled:scale-100 disabled:cursor-wait"
             >
               {isLoading ? (
                 <>

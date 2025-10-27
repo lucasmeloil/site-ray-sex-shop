@@ -16,7 +16,7 @@ const FloatingHearts: React.FC = () => {
         return (
           <div
             key={i}
-            className={`absolute bottom-[-40px] text-pink-500/50 heart-animation ${sizeClass}`}
+            className={`absolute bottom-[-40px] text-red-500/40 heart-animation ${sizeClass}`}
             style={style}
           >
             💖

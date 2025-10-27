@@ -1,5 +1,6 @@
 
 
+
 import React, { useState } from 'react';
 import type { Product, AdminUser } from './types';
 import AdminProfilePage from './AdminProfilePage';
@@ -24,27 +25,27 @@ const AdminPage: React.FC<AdminPageProps> = (props) => {
   const [activeTab, setActiveTab] = useState<AdminTab>('products');
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      <header className="sticky top-0 z-20 bg-gray-900/80 backdrop-blur-md border-b border-purple-800 p-4 flex items-center justify-between">
-        <h1 className="text-xl md:text-2xl font-bold text-pink-400">Painel de Administração</h1>
+    <div className="min-h-screen bg-gray-100 text-gray-800">
+      <header className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-red-200 p-4 flex items-center justify-between">
+        <h1 className="text-xl md:text-2xl font-bold text-red-500">Painel de Administração</h1>
         <button
           onClick={props.onLogout}
-          className="bg-gray-700 text-white font-bold py-2 px-4 rounded-full text-sm hover:bg-gray-600 transition-colors"
+          className="bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-full text-sm hover:bg-gray-300 transition-colors"
         >
           Logout
         </button>
       </header>
       
-      <nav className="flex border-b border-purple-800 px-4 md:px-8">
+      <nav className="flex border-b border-red-200 px-4 md:px-8">
         <button 
           onClick={() => setActiveTab('products')} 
-          className={`py-3 px-4 text-sm font-semibold transition-colors ${activeTab === 'products' ? 'border-b-2 border-pink-500 text-white' : 'text-gray-400'}`}
+          className={`py-3 px-4 text-sm font-semibold transition-colors ${activeTab === 'products' ? 'border-b-2 border-red-500 text-gray-900' : 'text-gray-500'}`}
         >
           Gerenciar Produtos
         </button>
         <button 
           onClick={() => setActiveTab('users')} 
-          className={`py-3 px-4 text-sm font-semibold transition-colors ${activeTab === 'users' ? 'border-b-2 border-pink-500 text-white' : 'text-gray-400'}`}
+          className={`py-3 px-4 text-sm font-semibold transition-colors ${activeTab === 'users' ? 'border-b-2 border-red-500 text-gray-900' : 'text-gray-500'}`}
         >
           Gerenciar Admins
         </button>
@@ -126,11 +127,11 @@ const AdminProductSection: React.FC<Omit<AdminPageProps, 'onLogout' | 'adminUser
             placeholder="Filtrar por nome..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-gray-800 border-2 border-purple-700 rounded-full py-2 px-4 text-white focus:outline-none focus:ring-2 focus:ring-pink-500"
+            className="w-full bg-white border-2 border-red-300 rounded-full py-2 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500"
           />
         </div>
         <div className="flex items-center gap-4">
-           <button onClick={onOpenAddModal} className="bg-pink-500 text-white font-bold py-2 px-4 rounded-full text-sm hover:bg-pink-600 transition-colors">
+           <button onClick={onOpenAddModal} className="bg-red-500 text-white font-bold py-2 px-4 rounded-full text-sm hover:bg-red-600 transition-colors">
               + Adicionar Produto
             </button>
           <div className="flex items-center gap-2 text-sm">
@@ -138,28 +139,28 @@ const AdminProductSection: React.FC<Omit<AdminPageProps, 'onLogout' | 'adminUser
             <select 
               value={sortKey} 
               onChange={(e) => handleSort(e.target.value as 'name' | 'price')}
-              className="bg-gray-800 border border-purple-700 rounded-md p-2"
+              className="bg-white border border-red-300 rounded-md p-2"
             >
               <option value="name">Nome</option>
               <option value="price">Preço</option>
             </select>
-            <button onClick={() => handleSort(sortKey)} className="p-2 bg-gray-800 border border-purple-700 rounded-md">
+            <button onClick={() => handleSort(sortKey)} className="p-2 bg-white border border-red-300 rounded-md">
               {sortDirection === 'asc' ? '↑' : '↓'}
             </button>
           </div>
         </div>
       </div>
       
-       <div className="flex border-b border-purple-800 mb-4">
+       <div className="flex border-b border-red-200 mb-4">
         <button 
           onClick={() => setActiveFilter('all')} 
-          className={`py-2 px-4 text-sm font-semibold transition-colors ${activeFilter === 'all' ? 'border-b-2 border-pink-500 text-white' : 'text-gray-400'}`}
+          className={`py-2 px-4 text-sm font-semibold transition-colors ${activeFilter === 'all' ? 'border-b-2 border-red-500 text-gray-900' : 'text-gray-500'}`}
         >
           Todos os Produtos
         </button>
         <button 
           onClick={() => setActiveFilter('promotion')} 
-          className={`py-2 px-4 text-sm font-semibold transition-colors ${activeFilter === 'promotion' ? 'border-b-2 border-pink-500 text-white' : 'text-gray-400'}`}
+          className={`py-2 px-4 text-sm font-semibold transition-colors ${activeFilter === 'promotion' ? 'border-b-2 border-red-500 text-gray-900' : 'text-gray-500'}`}
         >
           Produtos em Promoção
         </button>
@@ -176,7 +177,7 @@ const AdminProductSection: React.FC<Omit<AdminPageProps, 'onLogout' | 'adminUser
             />
           ))
         ) : (
-          <p className="text-center text-gray-400 py-8">Nenhum produto encontrado para os filtros selecionados.</p>
+          <p className="text-center text-gray-500 py-8">Nenhum produto encontrado para os filtros selecionados.</p>
         )}
       </div>
     </>

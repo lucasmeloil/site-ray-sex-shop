@@ -26,11 +26,11 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, products, onWheelClick 
 
       {promotionProducts.length > 0 && <PromotionsSection products={promotionProducts} />}
       
-      <section id="featured" className="py-20 px-4 sm:px-6 lg:px-8 bg-black">
+      <section id="featured" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-100">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-pink-400">Produtos em Destaque</h2>
-            <div className="mt-2 w-24 h-1 bg-purple-600 mx-auto rounded-full"></div>
+            <h2 className="text-4xl md:text-5xl font-extrabold text-red-500">Produtos em Destaque</h2>
+            <div className="mt-2 w-24 h-1 bg-red-500 mx-auto rounded-full"></div>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {featuredProducts.map((product) => (

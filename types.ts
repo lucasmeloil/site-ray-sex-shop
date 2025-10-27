@@ -14,7 +14,7 @@ export interface Product {
 
 export interface NavLink {
   name: string;
-  id: 'home' | 'catalog' | 'contact';
+  id: 'home' | 'catalog' | 'about' | 'contact';
 }
 
 export interface CartItem extends Product {

@@ -75,11 +75,11 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ products, targetProductId }) 
   };
 
   return (
-    <section id="catalog" className="py-28 px-4 sm:px-6 lg:px-8 bg-black min-h-screen">
+    <section id="catalog" className="py-28 px-4 sm:px-6 lg:px-8 bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12 pt-12 md:pt-0">
-          <h2 className="text-4xl md:text-5xl font-extrabold text-pink-400">Nosso Catálogo</h2>
-          <div className="mt-2 w-24 h-1 bg-purple-600 mx-auto rounded-full"></div>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-red-500">Nosso Catálogo</h2>
+          <div className="mt-2 w-24 h-1 bg-red-500 mx-auto rounded-full"></div>
         </div>
 
         <div className="mb-8 max-w-2xl mx-auto">
@@ -89,7 +89,7 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ products, targetProductId }) 
               value={searchQuery}
               onChange={handleSearchChange}
               placeholder="Buscar por nome ou código..."
-              className="w-full bg-gray-900 border-2 border-purple-800 rounded-full py-3 px-6 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all"
+              className="w-full bg-white border-2 border-red-200 rounded-full py-3 px-6 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all"
             />
             <span className="absolute right-6 top-1/2 -translate-y-1/2 text-2xl">🔍</span>
           </div>
@@ -102,8 +102,8 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ products, targetProductId }) 
               onClick={() => handleCategoryChange(category)}
               className={`px-4 py-2 text-sm md:text-base font-semibold rounded-full border-2 transition-all duration-300
                 ${selectedCategory === category
-                  ? 'bg-pink-500 border-pink-500 text-white shadow-[0_0_10px_rgba(236,72,153,0.7)]'
-                  : 'bg-gray-800/50 border-purple-800 text-gray-300 hover:border-pink-500 hover:text-white'
+                  ? 'bg-red-500 border-red-500 text-white shadow-[0_0_10px_rgba(239,68,68,0.5)]'
+                  : 'bg-white border-red-200 text-gray-600 hover:border-red-500 hover:text-gray-900'
                 }`}
             >
               {category}
@@ -123,7 +123,7 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ products, targetProductId }) 
             ))}
           </div>
         ) : (
-          <p className="text-center text-gray-400 text-lg">Nenhum produto encontrado.</p>
+          <p className="text-center text-gray-500 text-lg">Nenhum produto encontrado.</p>
         )}
 
         {totalPages > 1 && (

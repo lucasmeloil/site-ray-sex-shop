@@ -1,8 +1,9 @@
 import type { Product, NavLink, AdminUser } from './types';
 
 export const NAV_LINKS: NavLink[] = [
-  { name: 'Home', id: 'home' },
+  { name: 'Início', id: 'home' },
   { name: 'Catálogo', id: 'catalog' },
+  { name: 'Sobre', id: 'about' },
   { name: 'Contato', id: 'contact' },
 ];
 

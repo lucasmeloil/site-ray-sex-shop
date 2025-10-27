@@ -78,31 +78,31 @@ const PrizeWheel: React.FC<PrizeWheelProps> = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-4" onClick={onClose}>
       <div 
-        className="bg-gray-900 border-2 border-purple-800 rounded-2xl shadow-2xl shadow-purple-500/30 p-6 md:p-8 max-w-lg w-full text-center relative"
+        className="bg-white border-2 border-red-200 rounded-2xl shadow-2xl shadow-red-500/20 p-6 md:p-8 max-w-lg w-full text-center relative"
         onClick={(e) => e.stopPropagation()}
       >
-        <button onClick={onClose} className="absolute top-4 right-4 text-2xl text-gray-400 hover:text-white z-20">❌</button>
-        <h2 className="text-3xl font-bold text-pink-400 mb-4">Gire a Roleta da Sorte!</h2>
-        <p className="text-gray-400 mb-6">Tente a sorte uma vez por dia e ganhe prêmios incríveis.</p>
+        <button onClick={onClose} className="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-900 z-20">❌</button>
+        <h2 className="text-3xl font-bold text-red-500 mb-4">Gire a Roleta da Sorte!</h2>
+        <p className="text-gray-600 mb-6">Tente a sorte uma vez por dia e ganhe prêmios incríveis.</p>
 
         <div className="relative w-72 h-72 md:w-80 md:h-80 mx-auto mb-6 flex items-center justify-center">
             <div className="absolute -top-1 w-0 h-0 
                 border-l-[12px] border-l-transparent
                 border-r-[12px] border-r-transparent
-                border-b-[20px] border-b-pink-400 z-20
+                border-b-[20px] border-b-red-500 z-20
                 drop-shadow-[0_4px_2px_rgba(0,0,0,0.5)]">
             </div>
             
             <div
                 className="w-full h-full rounded-full relative transition-transform duration-[6000ms] ease-[cubic-bezier(0.1,0.5,0.2,1)]
-                           shadow-[inset_0_0_15px_rgba(0,0,0,0.5),0_0_20px_rgba(168,85,247,0.5)]"
+                           shadow-[inset_0_0_15px_rgba(0,0,0,0.5),0_0_20px_rgba(239,68,68,0.3)]"
                 style={{ transform: `rotate(${rotation}deg)` }}
             >
                 <div 
-                    className="w-full h-full rounded-full border-2 border-purple-800"
+                    className="w-full h-full rounded-full border-2 border-red-300"
                     style={{
                         background: `conic-gradient(from -${segmentAngle/2}deg, ${prizes.map((p, i) =>
-                            `${i % 2 === 0 ? '#4c1d95' : '#7e22ce'} ${i * (100 / numPrizes)}%, ${i % 2 === 0 ? '#4c1d95' : '#7e22ce'} ${(i + 1) * (100 / numPrizes)}%`
+                            `${i % 2 === 0 ? '#dc2626' : '#ef4444'} ${i * (100 / numPrizes)}%, ${i % 2 === 0 ? '#dc2626' : '#ef4444'} ${(i + 1) * (100 / numPrizes)}%`
                         ).join(',')})`
                     }}
                 ></div>
@@ -125,19 +125,19 @@ const PrizeWheel: React.FC<PrizeWheelProps> = ({ isOpen, onClose }) => {
                     );
                 })}
 
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-gray-900 rounded-full border-4 border-pink-500 z-10
-                               flex items-center justify-center text-pink-400 font-black text-lg shadow-inner">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-white rounded-full border-4 border-red-500 z-10
+                               flex items-center justify-center text-red-500 font-black text-lg shadow-inner">
                    RAY
                 </div>
             </div>
         </div>
 
-        {result && <p className="text-yellow-400 font-bold text-lg mb-4 h-6 animate-pulse">{result}</p>}
+        {result && <p className="text-red-600 font-bold text-lg mb-4 h-6 animate-pulse">{result}</p>}
         
         <button
           onClick={handleSpin}
           disabled={!canSpin || isSpinning}
-          className="w-full bg-pink-500 text-white font-bold py-3 rounded-full text-lg uppercase tracking-wider transition-all duration-300 transform hover:scale-105 disabled:bg-gray-600 disabled:scale-100 disabled:cursor-not-allowed shadow-[0_0_15px_rgba(236,72,153,0.7)]"
+          className="w-full bg-red-500 text-white font-bold py-3 rounded-full text-lg uppercase tracking-wider transition-all duration-300 transform hover:scale-105 disabled:bg-gray-300 disabled:scale-100 disabled:cursor-not-allowed shadow-[0_0_15px_rgba(239,68,68,0.5)]"
         >
           {isSpinning ? 'Girando...' : (canSpin ? 'Girar Agora!' : 'Volte Amanhã')}
         </button>
