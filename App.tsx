@@ -204,6 +204,7 @@ const AppContent: React.FC = () => {
       {page !== 'admin' && <FloatingHearts />}
       {page !== 'admin' && (
         <Header 
+          currentPage={page}
           onNavigate={(p) => handleNavigate(p)} 
           onCartClick={() => setIsCartOpen(true)} 
           onAdminClick={() => handleNavigate('admin')}

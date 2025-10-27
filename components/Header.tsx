@@ -9,6 +9,7 @@ interface HeaderProps {
     onNavigate: (page: NavLink['id'] | 'admin') => void;
     onCartClick: () => void;
     onAdminClick: () => void;
+    currentPage: NavLink['id'] | 'admin';
 }
 
 const BRAND_LOGO_URL = 'https://image2url.com/images/1761343291020-59b1ead0-0c00-4f56-ade4-696d390a6c7b.png';
@@ -24,12 +25,37 @@ const MobileNavItem: React.FC<{ icon: ReactNode; text: string; onClick: () => vo
     </li>
 );
 
-const Header: React.FC<HeaderProps> = ({ onNavigate, onCartClick, onAdminClick }) => {
+const BottomNavItem: React.FC<{
+  icon: ReactNode;
+  text: string;
+  onClick: () => void;
+  isActive?: boolean;
+  children?: ReactNode;
+}> = ({ icon, text, onClick, isActive = false, children }) => (
+  <button
+    onClick={onClick}
+    className={`flex flex-col items-center justify-center gap-1 w-full pt-2 pb-1 transition-colors relative ${
+      isActive ? 'text-red-500' : 'text-gray-600 hover:text-red-500'
+    }`}
+  >
+    {children}
+    {icon}
+    <span className="text-xs">{text}</span>
+  </button>
+);
+
+
+const Header: React.FC<HeaderProps> = ({ onNavigate, onCartClick, onAdminClick, currentPage }) => {
   const { itemCount } = useContext(CartContext) as CartContextType;
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleMobileNav = (page: NavLink['id']) => {
     onNavigate(page);
+    setIsMobileMenuOpen(false);
+  }
+  
+  const handleAdminClickMobile = () => {
+    onAdminClick();
     setIsMobileMenuOpen(false);
   }
 
@@ -74,25 +100,46 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, onCartClick, onAdminClick }
         </nav>
       </header>
 
-      {/* Mobile Top Nav */}
-       <header className="md:hidden fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md p-2 z-50 border-b border-red-200 flex items-center justify-between px-4">
+      {/* Mobile Top Nav (Logo only) */}
+       <header className="md:hidden fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md p-2 z-40 border-b border-red-200 flex items-center justify-start px-4">
          <button onClick={() => onNavigate('home')} className="flex items-center">
             <img src={BRAND_LOGO_URL} alt="Ray Sexshop Logo" className="h-10 w-auto" />
          </button>
-         <div className="flex items-center gap-2">
-            <button onClick={onCartClick} className="relative text-gray-700 hover:text-red-500 transition-colors p-2">
-              <ShoppingCart size={26} />
-              {itemCount > 0 && (
-                <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center text-[10px]">
-                  {itemCount}
-                </span>
-              )}
-            </button>
-            <button onClick={() => setIsMobileMenuOpen(true)} className="text-3xl text-gray-700 p-2">
-                <Menu size={28} />
-            </button>
-         </div>
       </header>
+      
+      {/* Mobile Bottom Nav */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md z-50 border-t border-red-200 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+        <div className="flex justify-around items-center h-16">
+          <BottomNavItem
+            icon={<Home size={24} />}
+            text="Início"
+            onClick={() => onNavigate('home')}
+            isActive={currentPage === 'home'}
+          />
+          <BottomNavItem
+            icon={<ShoppingBag size={24} />}
+            text="Catálogo"
+            onClick={() => onNavigate('catalog')}
+            isActive={currentPage === 'catalog'}
+          />
+          <BottomNavItem
+            icon={<ShoppingCart size={24} />}
+            text="Carrinho"
+            onClick={onCartClick}
+          >
+            {itemCount > 0 && (
+              <span className="absolute top-1 right-[20%] bg-red-500 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center font-bold">
+                {itemCount}
+              </span>
+            )}
+          </BottomNavItem>
+          <BottomNavItem
+            icon={<Menu size={24} />}
+            text="Menu"
+            onClick={() => setIsMobileMenuOpen(true)}
+          />
+        </div>
+      </nav>
       
       {/* Mobile Side Menu */}
       {isMobileMenuOpen && (
@@ -114,7 +161,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, onCartClick, onAdminClick }
                           {NAV_LINKS.map(link => (
                               <MobileNavItem key={link.id} icon={navIcons[link.id]} text={link.name} onClick={() => handleMobileNav(link.id)} />
                           ))}
-                          <MobileNavItem icon={<ShoppingCart size={20} />} text="Carrinho" onClick={() => { onCartClick(); setIsMobileMenuOpen(false); }} />
+                           <MobileNavItem icon={<User size={20} />} text="Admin" onClick={handleAdminClickMobile} />
                       </ul>
                   </nav>
 
