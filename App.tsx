@@ -30,17 +30,7 @@ const AppContent: React.FC = () => {
   
   const { clearCart } = useCart();
   
-  const [products, setProducts] = useState<Product[]>(() => {
-    try {
-      const savedProducts = localStorage.getItem('ray_sexshop_products');
-      if (savedProducts) {
-        return JSON.parse(savedProducts);
-      }
-    } catch (error) {
-      console.error("Failed to parse products from localStorage", error);
-    }
-    return INITIAL_PRODUCTS;
-  });
+  const [products, setProducts] = useState<Product[]>([]);
   
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>(() => {
     try {
@@ -66,16 +56,27 @@ const AppContent: React.FC = () => {
         if (user) setLoggedInUser(user);
     }
 
+    fetchProducts();
+
     setTimeout(() => setIsLoading(false), 1500);
   }, []);
 
-  useEffect(() => {
+  const fetchProducts = async () => {
     try {
-      localStorage.setItem('ray_sexshop_products', JSON.stringify(products));
+      const response = await fetch('/api/products');
+      if (response.ok) {
+        const data = await response.json();
+        setProducts(data);
+      } else {
+        console.error('Failed to fetch products');
+        setProducts(INITIAL_PRODUCTS);
+      }
     } catch (error) {
-        console.error("Failed to save products to localStorage", error);
+      console.error('Error fetching products:', error);
+      setProducts(INITIAL_PRODUCTS);
     }
-  }, [products]);
+  };
+
 
   useEffect(() => {
     try {
@@ -113,30 +114,68 @@ const AppContent: React.FC = () => {
     }
   };
 
-  const handleUpdateProduct = (updatedProduct: Product) => {
-    setProducts(prevProducts => 
-      prevProducts.map(p => p.id === updatedProduct.id ? updatedProduct : p)
-    );
-  };
+  const handleUpdateProduct = async (updatedProduct: Product): Promise<void> => {
+    try {
+      const response = await fetch('/api/products', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedProduct),
+      });
 
-  const handleDeleteProduct = (productId: number) => {
-    if (window.confirm('Tem certeza que deseja excluir este produto?')) {
-      setProducts(prevProducts => prevProducts.filter(p => p.id !== productId));
+      if (response.ok) {
+        const data = await response.json();
+        setProducts(prevProducts => 
+          prevProducts.map(p => p.id === data.id ? data : p)
+        );
+      } else {
+        const errorData = await response.json();
+        console.error('Failed to update product:', errorData);
+        throw new Error(errorData.error || 'Failed to update product');
+      }
+    } catch (error) {
+      console.error('Error updating product:', error);
+      throw error;
     }
   };
 
-  const handleAddProduct = (productData: Omit<Product, 'id'>): Promise<void> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const newProduct: Product = {
-          id: products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1,
-          ...productData,
-        };
+  const handleDeleteProduct = async (productId: number) => {
+    if (window.confirm('Tem certeza que deseja excluir este produto?')) {
+      try {
+        const response = await fetch(`/api/products?id=${productId}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          setProducts(prevProducts => prevProducts.filter(p => p.id !== productId));
+        } else {
+          console.error('Failed to delete product');
+        }
+      } catch (error) {
+        console.error('Error deleting product:', error);
+      }
+    }
+  };
+
+  const handleAddProduct = async (productData: Omit<Product, 'id'>): Promise<void> => {
+    try {
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(productData),
+      });
+
+      if (response.ok) {
+        const newProduct = await response.json();
         setProducts(prevProducts => [newProduct, ...prevProducts]);
         setIsAddModalOpen(false);
-        resolve();
-      }, 1000);
-    });
+      } else {
+        console.error('Failed to add product');
+        throw new Error('Failed to add product');
+      }
+    } catch (error) {
+      console.error('Error adding product:', error);
+      throw error;
+    }
   };
   
   const handleLogin = (email: string, pass: string): Promise<void> => {
