@@ -82,9 +82,9 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ onClose, onAdd }) => 
         imageUrl,
         isPromotion,
       });
-      // On success, the App component will close the modal.
     } catch (err) {
-      setError('Falha ao adicionar o produto. Tente novamente.');
+      console.error('erro ao cadastrar novo produto.', err);
+      setError(`Erro ao cadastrar novo produto: ${err instanceof Error ? err.message : 'Erro desconhecido'}`);
       setIsLoading(false);
     }
   };
