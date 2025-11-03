@@ -5,13 +5,15 @@ import type { Product } from '../types';
 
 interface AdminProductRowProps {
   product: Product;
-  onUpdate: (product: Product) => void;
+  onUpdate: (product: Product) => Promise<void>;
   onDelete: (productId: number) => void;
 }
 
 const AdminProductRow: React.FC<AdminProductRowProps> = ({ product, onUpdate, onDelete }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedProduct, setEditedProduct] = useState<Product>(product);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleInputChange = (field: keyof Product, value: string | boolean) => {
     setEditedProduct(prev => ({ ...prev, [field]: value }));
@@ -27,9 +29,18 @@ const AdminProductRow: React.FC<AdminProductRowProps> = ({ product, onUpdate, on
     }
   };
 
-  const handleSave = () => {
-    onUpdate(editedProduct);
-    setIsEditing(false);
+  const handleSave = async () => {
+    setIsLoading(true);
+    setError('');
+    try {
+      await onUpdate(editedProduct);
+      setIsEditing(false);
+    } catch (err) {
+      console.error('erro ao editar produto.', err);
+      setError(`Erro ao salvar: ${err instanceof Error ? err.message : 'Erro desconhecido'}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCancel = () => {
@@ -37,13 +48,23 @@ const AdminProductRow: React.FC<AdminProductRowProps> = ({ product, onUpdate, on
     setIsEditing(false);
   };
 
-  const handlePromotionToggle = () => {
-    onUpdate({ ...product, isPromotion: !product.isPromotion });
+  const handlePromotionToggle = async () => {
+    setIsLoading(true);
+    setError('');
+    try {
+      await onUpdate({ ...product, isPromotion: !product.isPromotion });
+    } catch (err) {
+      console.error('erro ao marcar como promoção.', err);
+      setError(`Erro ao alterar promoção: ${err instanceof Error ? err.message : 'Erro desconhecido'}`);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   if (isEditing) {
     return (
       <div className="bg-red-50 p-4 rounded-lg border-2 border-red-500 space-y-4">
+        {error && <p className="text-red-500 text-sm">{error}</p>}
         <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-start">
            <div className="flex flex-col items-center">
              <img src={editedProduct.imageUrl} alt={editedProduct.name} className="w-20 h-20 object-cover rounded-md" />
@@ -65,8 +86,8 @@ const AdminProductRow: React.FC<AdminProductRowProps> = ({ product, onUpdate, on
         <textarea value={editedProduct.description} onChange={e => handleInputChange('description', e.target.value)} className="bg-white p-2 rounded w-full text-sm border border-red-200" rows={2} placeholder="Descrição Longa"></textarea>
         <input type="text" value={editedProduct.shortDescription} onChange={e => handleInputChange('shortDescription', e.target.value)} className="bg-white p-2 rounded w-full text-sm border border-red-200" placeholder="Descrição Curta (Ex: 10% no PIX)" />
         <div className="flex justify-end gap-2">
-          <button onClick={handleCancel} className="p-2 text-2xl" title="Cancelar">❌</button>
-          <button onClick={handleSave} className="p-2 text-2xl" title="Salvar">✔️</button>
+          <button onClick={handleCancel} disabled={isLoading} className="p-2 text-2xl disabled:opacity-50" title="Cancelar">❌</button>
+          <button onClick={handleSave} disabled={isLoading} className="p-2 text-2xl disabled:opacity-50" title="Salvar">{isLoading ? '⏳' : '✔️'}</button>
         </div>
       </div>
     );
@@ -74,6 +95,7 @@ const AdminProductRow: React.FC<AdminProductRowProps> = ({ product, onUpdate, on
 
   return (
     <div className="bg-white p-3 rounded-lg border border-red-200 flex flex-col md:flex-row items-center gap-4">
+      {error && <p className="text-red-500 text-xs w-full">{error}</p>}
       <img src={product.imageUrl} alt={product.name} className="w-16 h-16 object-cover rounded-md flex-shrink-0" />
       <div className="flex-grow text-center md:text-left">
         <p className="font-bold">{product.name} <span className="text-xs text-gray-500">(SKU: {product.sku})</span></p>

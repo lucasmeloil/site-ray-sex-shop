@@ -9,7 +9,7 @@ import AdminProductRow from './components/AdminProductRow';
 
 interface AdminPageProps {
   products: Product[];
-  onUpdateProduct: (product: Product) => void;
+  onUpdateProduct: (product: Product) => Promise<void>;
   onDeleteProduct: (productId: number) => void;
   onOpenAddModal: () => void;
   onLogout: () => void;
