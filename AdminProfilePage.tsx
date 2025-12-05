@@ -1,5 +1,4 @@
 
-
 import React, { useState } from 'react';
 import type { AdminUser } from './types';
 
@@ -69,64 +68,85 @@ const AdminProfilePage: React.FC<AdminProfilePageProps> = ({ onAddAdmin, onUpdat
 
   const Message: React.FC<{ message: { type: string, text: string } }> = ({ message }) => {
     if (!message.text) return null;
-    const color = message.type === 'success' ? 'text-green-500' : 'text-red-500';
-    return <p className={`text-sm text-center ${color}`}>{message.text}</p>;
+    const color = message.type === 'success' ? 'text-green-600 bg-green-50 border-green-200' : 'text-red-600 bg-red-50 border-red-200';
+    return <p className={`text-sm text-center p-2 rounded border font-bold ${color}`}>{message.text}</p>;
   };
+
+  const inputClass = "w-full bg-white text-gray-900 border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-shadow";
 
   return (
     <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
       {/* Change Password Form */}
-      <div className="bg-white p-6 rounded-lg border border-red-200">
-        <h2 className="text-xl font-bold text-red-500 mb-4">Alterar sua Senha</h2>
+      <div className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm">
+        <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            🔑 Alterar sua Senha
+        </h2>
         <form onSubmit={handlePasswordChange} className="space-y-4">
-          <input
-            type="password"
-            placeholder="Senha Atual"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            className="w-full bg-gray-100 p-3 rounded border border-red-300"
-          />
-          <input
-            type="password"
-            placeholder="Nova Senha"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            className="w-full bg-gray-100 p-3 rounded border border-red-300"
-          />
-          <input
-            type="password"
-            placeholder="Confirmar Nova Senha"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full bg-gray-100 p-3 rounded border border-red-300"
-          />
+          <div>
+            <label className="block text-sm font-bold text-gray-600 mb-1">Senha Atual</label>
+            <input
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                className={inputClass}
+                placeholder="••••••"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-600 mb-1">Nova Senha</label>
+            <input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className={inputClass}
+                placeholder="••••••"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-600 mb-1">Confirmar Nova Senha</label>
+            <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className={inputClass}
+                placeholder="••••••"
+            />
+          </div>
           <Message message={passwordMessage} />
-          <button type="submit" className="w-full bg-red-600 text-white font-bold py-2 px-4 rounded-full hover:bg-red-700 transition-colors">
+          <button type="submit" className="w-full bg-red-600 text-white font-bold py-3 px-4 rounded-full hover:bg-red-700 transition-colors shadow-md mt-2">
             Salvar Nova Senha
           </button>
         </form>
       </div>
 
       {/* Add New Admin Form */}
-      <div className="bg-white p-6 rounded-lg border border-red-200">
-        <h2 className="text-xl font-bold text-red-500 mb-4">Adicionar Novo Administrador</h2>
+      <div className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm">
+        <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            ➕ Novo Administrador
+        </h2>
         <form onSubmit={handleAddAdmin} className="space-y-4">
-          <input
-            type="email"
-            placeholder="E-mail do Novo Admin"
-            value={newAdminEmail}
-            onChange={(e) => setNewAdminEmail(e.target.value)}
-            className="w-full bg-gray-100 p-3 rounded border border-red-300"
-          />
-          <input
-            type="password"
-            placeholder="Senha para Novo Admin"
-            value={newAdminPassword}
-            onChange={(e) => setNewAdminPassword(e.target.value)}
-            className="w-full bg-gray-100 p-3 rounded border border-red-300"
-          />
+          <div>
+             <label className="block text-sm font-bold text-gray-600 mb-1">E-mail do Novo Admin</label>
+             <input
+                type="email"
+                value={newAdminEmail}
+                onChange={(e) => setNewAdminEmail(e.target.value)}
+                className={inputClass}
+                placeholder="email@exemplo.com"
+            />
+          </div>
+          <div>
+             <label className="block text-sm font-bold text-gray-600 mb-1">Senha Temporária</label>
+             <input
+                type="password"
+                value={newAdminPassword}
+                onChange={(e) => setNewAdminPassword(e.target.value)}
+                className={inputClass}
+                placeholder="••••••"
+            />
+          </div>
           <Message message={addAdminMessage} />
-          <button type="submit" className="w-full bg-red-500 text-white font-bold py-2 px-4 rounded-full hover:bg-red-600 transition-colors">
+          <button type="submit" className="w-full bg-gray-800 text-white font-bold py-3 px-4 rounded-full hover:bg-gray-900 transition-colors shadow-md mt-2">
             Adicionar Administrador
           </button>
         </form>

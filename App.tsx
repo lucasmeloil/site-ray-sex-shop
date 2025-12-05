@@ -15,8 +15,8 @@ import LoginPage from './LoginPage';
 import PrizeWheel from './components/PrizeWheel';
 import AddProductModal from './components/AddProductModal';
 import CheckoutModal from './components/CheckoutModal';
-import { INITIAL_PRODUCTS, INITIAL_ADMIN_USERS } from './constants';
-import type { Product, AdminUser, NavLink } from './types';
+import { api } from './services/api';
+import type { Product, AdminUser, NavLink, HeroSlide } from './types';
 
 const AppContent: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -30,59 +30,51 @@ const AppContent: React.FC = () => {
   
   const { clearCart } = useCart();
   
-  const [products, setProducts] = useState<Product[]>(() => {
-    try {
-      const savedProducts = localStorage.getItem('ray_sexshop_products');
-      if (savedProducts) {
-        return JSON.parse(savedProducts);
-      }
-    } catch (error) {
-      console.error("Failed to parse products from localStorage", error);
-    }
-    return INITIAL_PRODUCTS;
-  });
-  
-  const [adminUsers, setAdminUsers] = useState<AdminUser[]>(() => {
-    try {
-        const savedUsers = localStorage.getItem('ray_sexshop_admins');
-        if (savedUsers) {
-            return JSON.parse(savedUsers);
-        }
-    } catch (error) {
-        console.error("Failed to parse admin users from localStorage", error);
-    }
-    return INITIAL_ADMIN_USERS;
-  });
-
+  // Data State
+  const [products, setProducts] = useState<Product[]>([]);
+  const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
+  const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
   const [loggedInUser, setLoggedInUser] = useState<AdminUser | null>(null);
 
+  // Initial Data Load
   useEffect(() => {
+    const loadData = async () => {
+        try {
+            const [fetchedProducts, fetchedAdmins, fetchedSlides] = await Promise.all([
+                api.products.list(),
+                api.admins.list(),
+                api.slides.list()
+            ]);
+            setProducts(fetchedProducts);
+            setAdminUsers(fetchedAdmins);
+            setHeroSlides(fetchedSlides);
+        } catch (error) {
+            console.error("Erro ao carregar dados da API", error);
+        } finally {
+             setTimeout(() => setIsLoading(false), 1000);
+        }
+    };
+
+    loadData();
+
     const ageVerified = sessionStorage.getItem('ageVerified');
     if (ageVerified === 'true') setIsAgeVerified(true);
     
     const loggedInUserEmail = sessionStorage.getItem('adminLoggedIn');
     if (loggedInUserEmail) {
-        const user = adminUsers.find(u => u.email === loggedInUserEmail);
-        if (user) setLoggedInUser(user);
+        // We need to wait for admins to load, but we can optimistically set if we find it later
+        // or just rely on the re-render when adminUsers populates. 
+        // For simplicity in this mock, we check in a separate effect or after load.
     }
-
-    setTimeout(() => setIsLoading(false), 1500);
   }, []);
 
+  // Sync login state after admins are loaded
   useEffect(() => {
-    try {
-      localStorage.setItem('ray_sexshop_products', JSON.stringify(products));
-    } catch (error) {
-        console.error("Failed to save products to localStorage", error);
-    }
-  }, [products]);
-
-  useEffect(() => {
-    try {
-        localStorage.setItem('ray_sexshop_admins', JSON.stringify(adminUsers));
-    } catch (error) {
-        console.error("Failed to save admin users to localStorage", error);
-    }
+      const loggedInUserEmail = sessionStorage.getItem('adminLoggedIn');
+      if (loggedInUserEmail && adminUsers.length > 0) {
+          const user = adminUsers.find(u => u.email === loggedInUserEmail);
+          if (user) setLoggedInUser(user);
+      }
   }, [adminUsers]);
 
   const handleAgeVerification = () => {
@@ -113,45 +105,53 @@ const AppContent: React.FC = () => {
     }
   };
 
-  const handleUpdateProduct = (updatedProduct: Product) => {
-    setProducts(prevProducts => 
-      prevProducts.map(p => p.id === updatedProduct.id ? updatedProduct : p)
-    );
-  };
+  // --- API Handlers ---
 
-  const handleDeleteProduct = (productId: number) => {
-    if (window.confirm('Tem certeza que deseja excluir este produto?')) {
-      setProducts(prevProducts => prevProducts.filter(p => p.id !== productId));
+  const handleUpdateProduct = async (updatedProduct: Product) => {
+    try {
+        const savedProduct = await api.products.update(updatedProduct);
+        setProducts(prev => prev.map(p => p.id === savedProduct.id ? savedProduct : p));
+    } catch (error) {
+        alert("Erro ao atualizar produto.");
     }
   };
 
-  const handleAddProduct = (productData: Omit<Product, 'id'>): Promise<void> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const newProduct: Product = {
-          id: products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1,
-          ...productData,
-        };
-        setProducts(prevProducts => [newProduct, ...prevProducts]);
+  const handleDeleteProduct = async (productId: number) => {
+    if (window.confirm('Tem certeza que deseja excluir este produto?')) {
+      try {
+          await api.products.delete(productId);
+          setProducts(prev => prev.filter(p => p.id !== productId));
+      } catch (error) {
+          alert("Erro ao excluir produto.");
+      }
+    }
+  };
+
+  const handleAddProduct = async (productData: Omit<Product, 'id'>) => {
+    try {
+        const newProduct = await api.products.create(productData);
+        setProducts(prev => [newProduct, ...prev]);
         setIsAddModalOpen(false);
-        resolve();
-      }, 1000);
-    });
+    } catch (error) {
+        console.error(error);
+        throw new Error("Erro ao salvar no banco de dados.");
+    }
   };
   
-  const handleLogin = (email: string, pass: string): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const user = adminUsers.find(u => u.email === email && u.password === pass);
-        if (user) {
-          sessionStorage.setItem('adminLoggedIn', user.email);
-          setLoggedInUser(user);
-          resolve();
-        } else {
-          reject(new Error('Credenciais inválidas'));
-        }
-      }, 1000);
-    });
+  const handleLogin = async (email: string, pass: string): Promise<void> => {
+     // Simulate API Login
+     return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            const user = adminUsers.find(u => u.email === email && u.password === pass);
+            if (user) {
+                sessionStorage.setItem('adminLoggedIn', user.email);
+                setLoggedInUser(user);
+                resolve();
+            } else {
+                reject(new Error('Credenciais inválidas'));
+            }
+        }, 1000);
+     });
   };
 
   const handleLogout = () => {
@@ -160,14 +160,58 @@ const AppContent: React.FC = () => {
     setPage('home');
   };
 
-  const handleAddAdmin = (newAdmin: Omit<AdminUser, 'id'>) => {
-      const newId = adminUsers.length > 0 ? Math.max(...adminUsers.map(u => u.id)) + 1 : 1;
-      setAdminUsers(prev => [...prev, { ...newAdmin, id: newId }]);
+  const handleAddAdmin = async (newAdmin: Omit<AdminUser, 'id'>) => {
+      try {
+          const createdAdmin = await api.admins.create(newAdmin);
+          setAdminUsers(prev => [...prev, createdAdmin]);
+      } catch (error) {
+          alert("Erro ao criar admin.");
+      }
   };
 
-  const handleUpdateAdminPassword = (userId: number, newPassword: string) => {
-      setAdminUsers(prev => prev.map(u => u.id === userId ? { ...u, password: newPassword } : u));
+  const handleUpdateAdminPassword = async (userId: number, newPassword: string) => {
+      try {
+          await api.admins.updatePassword(userId, newPassword);
+          setAdminUsers(prev => prev.map(u => u.id === userId ? { ...u, password: newPassword } : u));
+      } catch (error) {
+          alert("Erro ao atualizar senha.");
+      }
   };
+
+  // Hero Slide Handlers
+  const handleUpdateSlide = async (updatedSlide: HeroSlide) => {
+      try {
+          const savedSlide = await api.slides.update(updatedSlide);
+          setHeroSlides(prev => prev.map(s => s.id === savedSlide.id ? savedSlide : s));
+      } catch (error) {
+          alert("Erro ao atualizar slide.");
+      }
+  };
+
+  const handleAddSlide = async (newSlide: Omit<HeroSlide, 'id'>) => {
+      try {
+          const createdSlide = await api.slides.create(newSlide);
+          setHeroSlides(prev => [...prev, createdSlide]);
+      } catch (error) {
+          alert("Erro ao adicionar slide.");
+      }
+  };
+
+  const handleDeleteSlide = async (slideId: number) => {
+      if(heroSlides.length <= 1) {
+          alert("Você deve ter pelo menos 1 slide.");
+          return;
+      }
+      if (window.confirm('Tem certeza que deseja excluir este slide?')) {
+          try {
+              await api.slides.delete(slideId);
+              setHeroSlides(prev => prev.filter(s => s.id !== slideId));
+          } catch (error) {
+              alert("Erro ao excluir slide.");
+          }
+      }
+  };
+
 
   const handleOpenCheckout = () => {
     setIsCartOpen(false);
@@ -189,18 +233,23 @@ const AppContent: React.FC = () => {
           onDeleteProduct={handleDeleteProduct}
           onOpenAddModal={() => setIsAddModalOpen(true)}
           onLogout={handleLogout}
+          onBack={() => setPage('home')}
           adminUsers={adminUsers}
           onAddAdmin={handleAddAdmin}
           onUpdateAdminPassword={handleUpdateAdminPassword}
           currentUser={loggedInUser}
+          heroSlides={heroSlides}
+          onUpdateSlide={handleUpdateSlide}
+          onAddSlide={handleAddSlide}
+          onDeleteSlide={handleDeleteSlide}
         />
       );
     }
-    return <LoginPage onLogin={handleLogin} />;
+    return <LoginPage onLogin={handleLogin} onBack={() => setPage('home')} />;
   };
 
   return (
-    <div className="bg-gray-100 text-gray-800 min-h-screen font-sans">
+    <div className="bg-gray-50 text-gray-800 min-h-screen font-sans selection:bg-red-200 selection:text-red-900">
       {page !== 'admin' && <FloatingHearts />}
       {page !== 'admin' && (
         <Header 
@@ -211,8 +260,16 @@ const AppContent: React.FC = () => {
         />
       )}
       
-      <main className="relative z-10">
-        {page === 'home' && <HomePage onNavigate={handleNavigate} products={products} onWheelClick={() => setIsWheelOpen(true)} />}
+      {/* Added pb-20 for mobile bottom nav spacing */}
+      <main className="relative z-10 pb-20 md:pb-0">
+        {page === 'home' && (
+            <HomePage 
+                onNavigate={handleNavigate} 
+                products={products} 
+                onWheelClick={() => setIsWheelOpen(true)}
+                heroSlides={heroSlides}
+            />
+        )}
         {page === 'catalog' && <CatalogPage products={products} targetProductId={targetProductId} />}
         {page === 'contact' && <ContactPage />}
         {page === 'admin' && renderAdminSection()}

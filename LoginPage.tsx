@@ -1,14 +1,15 @@
 
-
 import React, { useState } from 'react';
+import { ArrowLeft } from 'lucide-react';
 
 const LOGO_URL = 'https://image2url.com/images/1761343291020-59b1ead0-0c00-4f56-ade4-696d390a6c7b.png';
 
 interface LoginPageProps {
   onLogin: (email: string, pass: string) => Promise<void>;
+  onBack: () => void;
 }
 
-const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
+const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onBack }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -32,7 +33,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4 relative">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
             <img src={LOGO_URL} alt="Ray Sexshop Logo" className="w-auto h-20 mx-auto mb-4" />
@@ -89,6 +90,16 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
             </button>
           </div>
         </form>
+        
+        <div className="mt-8 text-center">
+            <button 
+                onClick={onBack}
+                className="inline-flex items-center gap-2 text-gray-500 hover:text-red-500 font-medium transition-colors"
+            >
+                <ArrowLeft size={18} />
+                Voltar ao site
+            </button>
+        </div>
       </div>
     </div>
   );

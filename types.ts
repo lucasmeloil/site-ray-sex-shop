@@ -36,3 +36,11 @@ export interface AdminUser {
   email: string;
   password: string;
 }
+
+export interface HeroSlide {
+    id: number;
+    imageUrl: string;
+    title: string;
+    subtitle: string;
+    buttonText: string;
+}

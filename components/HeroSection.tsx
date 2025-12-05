@@ -1,46 +1,155 @@
-import React from 'react';
 
-// Using the new banner URL provided by the user
-const BANNER_URL = 'https://image2url.com/images/1761343426235-89f30e35-bc5c-4d5d-b852-460f4e058853.png';
+import React, { useState, useEffect } from 'react';
+import type { HeroSlide } from '../types';
+import { ChevronLeft, ChevronRight, ArrowRight, Sparkles } from 'lucide-react';
 
 interface HeroSectionProps {
   onNavigate: (page: 'catalog') => void;
+  slides: HeroSlide[];
 }
 
-const HeroSection: React.FC<HeroSectionProps> = ({ onNavigate }) => {
+const HeroSection: React.FC<HeroSectionProps> = ({ onNavigate, slides }) => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 6000);
+
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+  };
+
+  if (!slides || slides.length === 0) return null;
+
+  // Renderiza o título separando a última palavra para destaque
+  const renderStyledTitle = (title: string) => {
+      const words = title.split(' ');
+      if (words.length === 1) return <span className="text-white drop-shadow-lg">{words[0]}</span>;
+      
+      const lastWord = words.pop();
+      const initialPart = words.join(' ');
+      
+      return (
+          <>
+            <span className="text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)]">{initialPart} </span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-br from-red-500 to-red-600 drop-shadow-none filter brightness-125 relative inline-block">
+                {lastWord}
+                {/* Underline decoration */}
+                <svg className="absolute w-full h-3 -bottom-1 left-0 text-red-600 opacity-80" viewBox="0 0 100 10" preserveAspectRatio="none">
+                    <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="4" fill="none" />
+                </svg>
+            </span>
+          </>
+      );
+  };
+
   return (
-    <section id="home" className="flex items-center bg-gray-100 relative overflow-hidden pt-24 md:pt-32 pb-12 md:pb-16">
-      <div className="relative z-10 container mx-auto px-4">
-        <div className="flex flex-col md:flex-row items-center justify-center md:justify-between gap-8 md:gap-12">
-          
-          {/* Image container (ordered first for mobile) */}
-          <div className="w-full md:w-5/12 md:order-2">
-            <img 
-              src={BANNER_URL} 
-              alt="Ray Sexshop Banner" 
-              className="w-full max-w-[14rem] mx-auto md:max-w-full rounded-lg shadow-2xl shadow-red-500/20" 
-            />
+    <section id="home" className="relative h-[85vh] md:h-screen min-h-[600px] w-full overflow-hidden bg-gray-900 group">
+      {slides.map((slide, index) => (
+        <div
+          key={slide.id}
+          className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
+            index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
+          }`}
+        >
+          {/* Background Image with Zoom Effect */}
+          <div className="absolute inset-0">
+             <img 
+                src={slide.imageUrl} 
+                alt={slide.title} 
+                className="w-full h-full object-cover object-center transition-transform duration-[8000ms] ease-linear"
+                style={{ transform: index === currentSlide ? 'scale(110%)' : 'scale(100%)' }}
+             />
+             
+             {/* 
+                CINEMATIC SCRIM GRADIENT 
+                Isso é o segredo: Um degradê que vai do preto (esquerda/baixo) para transparente.
+                Garante leitura do texto branco SEM tapar o produto na imagem.
+             */}
+             <div className="absolute inset-0 bg-gradient-to-r from-gray-950/90 via-gray-950/40 to-transparent md:bg-gradient-to-r md:from-gray-950/80 md:via-gray-900/20 md:to-transparent opacity-90"></div>
+             <div className="absolute inset-0 bg-gradient-to-t from-gray-950/90 via-transparent to-transparent md:hidden"></div>
           </div>
 
-          {/* Text content (ordered second for mobile) */}
-          <div className="text-center md:text-left md:w-6/12 md:order-1">
-            <h1 className="text-5xl md:text-6xl font-extrabold tracking-tighter mb-4 text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-400 drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]">
-              Explore Seus Desejos
-            </h1>
-            <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto md:mx-0 mb-8">
-              A fronteira final do prazer. Descubra uma nova dimensão de sensações com nossa coleção exclusiva.
-            </p>
-            <button
-              onClick={() => onNavigate('catalog')}
-              className="inline-block bg-red-500 text-white font-bold py-3 px-8 rounded-full text-lg uppercase tracking-wider
-                         hover:bg-red-600 transition-all duration-300 transform hover:scale-105
-                         shadow-[0_0_15px_rgba(239,68,68,0.5)] hover:shadow-[0_0_25px_rgba(239,68,68,0.8)]"
-            >
-              Ver Catálogo
-            </button>
-          </div>
+          {/* Content Container - No Box, Just Text */}
+          <div className="relative z-20 h-full container mx-auto px-6 md:px-12 flex items-center justify-center md:justify-start">
+            <div className={`
+                max-w-3xl text-center md:text-left
+                transform transition-all duration-1000 delay-300
+                ${index === currentSlide ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'}
+            `}>
+                {/* Badge - Small Glass Element */}
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-6 shadow-lg">
+                    <Sparkles size={12} className="text-red-500 animate-pulse" />
+                    <span>Coleção Exclusiva</span>
+                </div>
 
+                {/* Main Title - Huge & Clean */}
+                <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.9] mb-6 font-sans drop-shadow-2xl">
+                    {renderStyledTitle(slide.title)}
+                </h1>
+
+                {/* Subtitle - Readable on Dark */}
+                <p className="text-base md:text-2xl text-gray-200 font-light leading-relaxed mb-10 max-w-xl mx-auto md:mx-0 drop-shadow-md">
+                    {slide.subtitle}
+                </p>
+                
+                {/* Action Button - Floating */}
+                <button
+                    onClick={() => onNavigate('catalog')}
+                    className="group relative px-10 py-4 bg-red-600 text-white font-bold text-sm md:text-lg rounded-full overflow-hidden shadow-[0_0_30px_rgba(220,38,38,0.4)] hover:shadow-[0_0_50px_rgba(220,38,38,0.6)] transition-all duration-300 transform hover:-translate-y-1"
+                >
+                    <span className="relative z-10 flex items-center gap-3 uppercase tracking-widest">
+                        {slide.buttonText} 
+                        <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform duration-300" />
+                    </span>
+                    
+                    {/* Button Shine Effect */}
+                    <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/30 to-transparent z-0"></div>
+                </button>
+            </div>
+          </div>
         </div>
+      ))}
+
+      {/* Navigation Arrows (Hidden on Mobile for cleaner look) */}
+      <div className="hidden md:flex absolute bottom-12 right-12 z-30 gap-4">
+        <button 
+            onClick={prevSlide}
+            className="w-14 h-14 rounded-full bg-white/5 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-red-600 hover:border-red-600 transition-all duration-300 group"
+        >
+            <ChevronLeft size={28} className="group-hover:-translate-x-1 transition-transform" />
+        </button>
+        <button 
+            onClick={nextSlide}
+            className="w-14 h-14 rounded-full bg-white/5 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-red-600 hover:border-red-600 transition-all duration-300 group"
+        >
+            <ChevronRight size={28} className="group-hover:translate-x-1 transition-transform" />
+        </button>
+      </div>
+
+      {/* Progress Indicators */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 md:left-12 md:translate-x-0 z-30 flex gap-3">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => goToSlide(index)}
+            className={`h-1 transition-all duration-500 rounded-full shadow-sm ${
+              index === currentSlide ? 'w-12 bg-red-600' : 'w-3 bg-white/40 hover:bg-white/80'
+            }`}
+          />
+        ))}
       </div>
     </section>
   );
