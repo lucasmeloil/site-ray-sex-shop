@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import type { Product, AdminUser, HeroSlide } from './types';
 import AdminProfilePage from './AdminProfilePage';
 import AdminProductRow from './components/AdminProductRow';
-import { LogOut, Home } from 'lucide-react';
+import { LogOut, Home, Image as ImageIcon, Type, MousePointer2 } from 'lucide-react';
 
 interface AdminPageProps {
   products: Product[];
@@ -62,7 +62,7 @@ const AdminPage: React.FC<AdminPageProps> = (props) => {
           onClick={() => setActiveTab('hero')} 
           className={`py-4 px-6 text-sm font-bold transition-all border-b-2 whitespace-nowrap ${activeTab === 'hero' ? 'border-red-600 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
         >
-          🖼️ Banners
+          🖼️ Banners (Slides)
         </button>
         <button 
           onClick={() => setActiveTab('users')} 
@@ -234,58 +234,65 @@ const AdminHeroSection: React.FC<{
     const inputClass = "w-full p-2.5 rounded border border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-red-500 focus:border-red-500";
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center mb-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+        <div className="space-y-8">
+            <div className="flex justify-between items-center bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div>
-                    <h2 className="text-lg font-bold text-gray-900">Slides da Tela Inicial</h2>
-                    <p className="text-sm text-gray-500">Gerencie as imagens e textos que aparecem no topo do site.</p>
+                    <h2 className="text-xl font-bold text-gray-900">Banners da Tela Inicial</h2>
+                    <p className="text-sm text-gray-500 mt-1">Gerencie as imagens rotativas (sliders) da página principal.</p>
                 </div>
                 <button 
                     onClick={() => setIsAdding(true)}
-                    className="bg-red-600 text-white font-bold py-2.5 px-6 rounded-full text-sm hover:bg-red-700 transition-colors shadow-md"
+                    className="bg-red-600 text-white font-bold py-3 px-8 rounded-full text-sm hover:bg-red-700 transition-colors shadow-lg hover:shadow-red-500/30"
                 >
-                    + Novo Slide
+                    + Novo Banner
                 </button>
             </div>
 
             {isAdding && (
-                <div className="bg-white p-6 rounded-xl border-2 border-red-500 mb-6 shadow-lg">
-                    <h3 className="font-bold text-lg text-red-600 mb-4">Adicionar Novo Slide</h3>
+                <div className="bg-white p-6 rounded-xl border-2 border-red-500 mb-6 shadow-xl animate-fade-in-up">
+                    <h3 className="font-bold text-lg text-red-600 mb-4 flex items-center gap-2">
+                        <ImageIcon size={20} />
+                        Adicionar Novo Banner
+                    </h3>
                     <form onSubmit={handleAddSubmit} className="space-y-4">
                          <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1">URL da Imagem</label>
-                            <input type="text" value={newSlide.imageUrl} onChange={e => setNewSlide({...newSlide, imageUrl: e.target.value})} className={inputClass} required placeholder="https://..." />
+                            <label className="block text-sm font-bold text-gray-700 mb-1">URL da Imagem de Fundo</label>
+                            <input type="text" value={newSlide.imageUrl} onChange={e => setNewSlide({...newSlide, imageUrl: e.target.value})} className={inputClass} required placeholder="https://exemplo.com/imagem.jpg" />
+                            <p className="text-xs text-gray-500 mt-1">Recomendado: Imagens horizontais de alta qualidade (1920x1080).</p>
                         </div>
-                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1">Título Principal</label>
-                            <input type="text" value={newSlide.title} onChange={e => setNewSlide({...newSlide, title: e.target.value})} className={inputClass} required placeholder="Ex: Coleção de Verão" />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">Título Principal</label>
+                                <input type="text" value={newSlide.title} onChange={e => setNewSlide({...newSlide, title: e.target.value})} className={inputClass} required placeholder="Ex: Coleção de Verão" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">Texto do Botão</label>
+                                <input type="text" value={newSlide.buttonText} onChange={e => setNewSlide({...newSlide, buttonText: e.target.value})} className={inputClass} required placeholder="Ex: Comprar Agora" />
+                            </div>
                         </div>
                          <div>
                             <label className="block text-sm font-bold text-gray-700 mb-1">Subtítulo / Descrição</label>
                             <input type="text" value={newSlide.subtitle} onChange={e => setNewSlide({...newSlide, subtitle: e.target.value})} className={inputClass} required placeholder="Ex: Confira as novidades..." />
                         </div>
-                        <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1">Texto do Botão</label>
-                            <input type="text" value={newSlide.buttonText} onChange={e => setNewSlide({...newSlide, buttonText: e.target.value})} className={inputClass} required placeholder="Ex: Comprar Agora" />
-                        </div>
-                        <div className="flex justify-end gap-3 pt-2">
-                            <button type="button" onClick={() => setIsAdding(false)} className="px-4 py-2 text-gray-600 font-bold bg-gray-100 rounded-full hover:bg-gray-200">Cancelar</button>
-                            <button type="submit" className="px-6 py-2 bg-red-600 text-white font-bold rounded-full hover:bg-red-700">Adicionar Slide</button>
+                        
+                        <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 mt-4">
+                            <button type="button" onClick={() => setIsAdding(false)} className="px-6 py-2.5 text-gray-600 font-bold bg-gray-100 rounded-full hover:bg-gray-200 transition-colors">Cancelar</button>
+                            <button type="submit" className="px-8 py-2.5 bg-red-600 text-white font-bold rounded-full hover:bg-red-700 transition-colors shadow-md">Salvar Banner</button>
                         </div>
                     </form>
                 </div>
             )}
 
             <div className="grid gap-6">
-                {slides.map(slide => (
-                    <AdminSlideRow key={slide.id} slide={slide} onUpdate={onUpdate} onDelete={onDelete} />
+                {slides.map((slide, index) => (
+                    <AdminSlideRow key={slide.id} slide={slide} index={index} onUpdate={onUpdate} onDelete={onDelete} />
                 ))}
             </div>
         </div>
     )
 }
 
-const AdminSlideRow: React.FC<{ slide: HeroSlide, onUpdate: (s: HeroSlide) => void, onDelete: (id: number) => void }> = ({ slide, onUpdate, onDelete }) => {
+const AdminSlideRow: React.FC<{ slide: HeroSlide, index: number, onUpdate: (s: HeroSlide) => void, onDelete: (id: number) => void }> = ({ slide, index, onUpdate, onDelete }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editedSlide, setEditedSlide] = useState(slide);
 
@@ -294,54 +301,78 @@ const AdminSlideRow: React.FC<{ slide: HeroSlide, onUpdate: (s: HeroSlide) => vo
         setIsEditing(false);
     };
     
-    const inputClass = "w-full p-2 rounded border border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-red-500 focus:border-red-500 text-sm";
-
+    const inputClass = "w-full p-2.5 rounded border border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-red-500 focus:border-red-500 text-sm";
 
     if (isEditing) {
         return (
              <div className="bg-white p-6 rounded-xl border-2 border-red-500 shadow-md space-y-4">
-                 <h4 className="font-bold text-gray-800">Editando Slide #{slide.id}</h4>
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                     <div>
-                         <label className="block text-xs font-bold text-gray-500 mb-1">Título</label>
-                         <input type="text" value={editedSlide.title} onChange={e => setEditedSlide({...editedSlide, title: e.target.value})} className={inputClass} />
+                 <h4 className="font-bold text-gray-800 flex items-center gap-2">
+                    <ImageIcon size={18} className="text-red-500" />
+                    Editando Banner #{index + 1}
+                 </h4>
+                 
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                     {/* Preview Column */}
+                     <div className="space-y-2">
+                        <label className="block text-xs font-bold text-gray-500">Pré-visualização da Imagem</label>
+                        <div className="relative aspect-video rounded-lg overflow-hidden border border-gray-200 bg-gray-100">
+                             <img src={editedSlide.imageUrl} alt="Preview" className="w-full h-full object-cover" onError={(e) => (e.currentTarget.src = 'https://placehold.co/600x400?text=Erro+Imagem')} />
+                        </div>
                      </div>
-                      <div>
-                         <label className="block text-xs font-bold text-gray-500 mb-1">Texto Botão</label>
-                         <input type="text" value={editedSlide.buttonText} onChange={e => setEditedSlide({...editedSlide, buttonText: e.target.value})} className={inputClass} />
+
+                     {/* Fields Column */}
+                     <div className="space-y-4">
+                         <div>
+                             <label className="block text-xs font-bold text-gray-500 mb-1 flex items-center gap-1"><ImageIcon size={12}/> URL da Imagem</label>
+                             <input type="text" value={editedSlide.imageUrl} onChange={e => setEditedSlide({...editedSlide, imageUrl: e.target.value})} className={inputClass} />
+                         </div>
+                         <div>
+                             <label className="block text-xs font-bold text-gray-500 mb-1 flex items-center gap-1"><Type size={12}/> Título Principal</label>
+                             <input type="text" value={editedSlide.title} onChange={e => setEditedSlide({...editedSlide, title: e.target.value})} className={inputClass} />
+                         </div>
+                         <div>
+                             <label className="block text-xs font-bold text-gray-500 mb-1">Subtítulo</label>
+                             <input type="text" value={editedSlide.subtitle} onChange={e => setEditedSlide({...editedSlide, subtitle: e.target.value})} className={inputClass} />
+                         </div>
+                          <div>
+                             <label className="block text-xs font-bold text-gray-500 mb-1 flex items-center gap-1"><MousePointer2 size={12}/> Texto do Botão</label>
+                             <input type="text" value={editedSlide.buttonText} onChange={e => setEditedSlide({...editedSlide, buttonText: e.target.value})} className={inputClass} />
+                         </div>
                      </div>
                  </div>
-                 <div>
-                     <label className="block text-xs font-bold text-gray-500 mb-1">Subtítulo</label>
-                     <input type="text" value={editedSlide.subtitle} onChange={e => setEditedSlide({...editedSlide, subtitle: e.target.value})} className={inputClass} />
-                 </div>
-                  <div>
-                     <label className="block text-xs font-bold text-gray-500 mb-1">URL da Imagem</label>
-                     <input type="text" value={editedSlide.imageUrl} onChange={e => setEditedSlide({...editedSlide, imageUrl: e.target.value})} className={inputClass} />
-                 </div>
-                 <div className="flex justify-end gap-2 pt-2">
-                     <button onClick={() => setIsEditing(false)} className="text-gray-600 px-4 py-2 font-bold bg-gray-100 rounded-full hover:bg-gray-200">Cancelar</button>
-                     <button onClick={handleSave} className="bg-green-600 text-white px-6 py-2 rounded-full font-bold hover:bg-green-700">Salvar</button>
+
+                 <div className="flex justify-end gap-2 pt-4 border-t border-gray-100">
+                     <button onClick={() => setIsEditing(false)} className="text-gray-600 px-6 py-2 font-bold bg-gray-100 rounded-full hover:bg-gray-200 transition-colors">Cancelar</button>
+                     <button onClick={handleSave} className="bg-green-600 text-white px-8 py-2 rounded-full font-bold hover:bg-green-700 transition-colors shadow-md">Salvar Alterações</button>
                  </div>
              </div>
         );
     }
 
     return (
-        <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col md:flex-row gap-6 items-center hover:shadow-md transition-shadow">
-            <div className="relative group w-full md:w-48 h-28 flex-shrink-0">
-                <img src={slide.imageUrl} alt="Slide Preview" className="w-full h-full object-cover rounded-lg bg-gray-100 border border-gray-200" />
+        <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col md:flex-row gap-6 items-center hover:shadow-md transition-shadow group">
+            <div className="relative w-full md:w-64 h-36 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 bg-gray-100">
+                <img src={slide.imageUrl} alt="Slide Preview" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
             </div>
-            <div className="flex-1 text-center md:text-left space-y-1">
-                <h4 className="font-bold text-gray-900 text-lg">{slide.title}</h4>
-                <p className="text-sm text-gray-600">{slide.subtitle}</p>
-                <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full bg-red-50 text-red-600 text-xs font-bold border border-red-100">
-                    Botão: {slide.buttonText}
+            
+            <div className="flex-1 text-center md:text-left space-y-2">
+                <h4 className="font-black text-gray-900 text-xl">{slide.title}</h4>
+                <p className="text-sm text-gray-600 max-w-lg">{slide.subtitle}</p>
+                <div className="flex flex-wrap gap-2 justify-center md:justify-start mt-2">
+                    <span className="inline-flex items-center px-3 py-1 rounded-md bg-gray-100 text-gray-600 text-xs font-bold border border-gray-200">
+                        Botão: {slide.buttonText}
+                    </span>
                 </div>
             </div>
-            <div className="flex gap-3">
-                <button onClick={() => setIsEditing(true)} className="p-2.5 text-gray-500 bg-gray-50 border border-gray-200 rounded-full hover:text-blue-600 hover:bg-blue-50 hover:border-blue-200 transition-all" title="Editar">✏️</button>
-                <button onClick={() => onDelete(slide.id)} className="p-2.5 text-gray-500 bg-gray-50 border border-gray-200 rounded-full hover:text-red-600 hover:bg-red-50 hover:border-red-200 transition-all" title="Excluir">🗑️</button>
+            
+            <div className="flex gap-3 border-t md:border-t-0 md:border-l border-gray-100 pt-4 md:pt-0 md:pl-6">
+                <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 px-4 py-2 text-blue-600 bg-blue-50 border border-blue-100 rounded-full hover:bg-blue-600 hover:text-white transition-all font-bold text-sm" title="Editar">
+                    ✏️ Editar
+                </button>
+                <button onClick={() => onDelete(slide.id)} className="flex items-center gap-2 px-4 py-2 text-red-600 bg-red-50 border border-red-100 rounded-full hover:bg-red-600 hover:text-white transition-all font-bold text-sm" title="Excluir">
+                    🗑️ Excluir
+                </button>
             </div>
         </div>
     )

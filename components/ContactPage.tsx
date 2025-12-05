@@ -86,7 +86,7 @@ const ContactPage: React.FC = () => {
 
                 <div className="rounded-3xl overflow-hidden border border-gray-200 shadow-xl h-64 md:h-80 hover:shadow-2xl transition-all duration-500">
                     <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3618.041649931327!2d-53.45781308873091!3d-24.930778977785566!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94f3d47353fed4c3%3A0x7a63a568b209c1a3!2sCentral%20Park%20Shopping%20Center!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3617.587841793548!2d-53.46043648499576!3d-24.94639998401344!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94f3d58b37113d87%3A0x1440bf8abd097da1!2sRay%20Sexshop%20%26%20moda%20%C3%ADntima!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr"
                         width="100%"
                         height="100%"
                         style={{ border: 0 }}
