@@ -8,11 +8,12 @@ import { Search, Filter, Sparkles, SlidersHorizontal } from 'lucide-react';
 interface CatalogPageProps {
   products: Product[];
   targetProductId?: number | null;
+  onOpenProductDetails: (product: Product) => void;
 }
 
 const ITEMS_PER_PAGE = 12;
 
-const CatalogPage: React.FC<CatalogPageProps> = ({ products, targetProductId }) => {
+const CatalogPage: React.FC<CatalogPageProps> = ({ products, targetProductId, onOpenProductDetails }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
   const [searchQuery, setSearchQuery] = useState('');
@@ -168,6 +169,7 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ products, targetProductId }) 
               <div key={product.id} ref={el => { productRefs.current[product.id] = el; }} className="animate-fade-in-up">
                 <ProductCard 
                   product={product} 
+                  onQuickView={onOpenProductDetails}
                 />
               </div>
             ))}

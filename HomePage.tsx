@@ -4,6 +4,7 @@ import HeroSection from './components/HeroSection';
 import AboutSection from './components/AboutSection';
 import ProductCard from './components/ProductCard';
 import PromotionsSection from './components/PromotionsSection';
+import FAQSection from './components/FAQSection';
 import type { Product, HeroSlide } from './types';
 
 interface HomePageProps {
@@ -11,15 +12,12 @@ interface HomePageProps {
   products: Product[];
   onWheelClick: () => void;
   heroSlides: HeroSlide[];
+  onOpenProductDetails: (product: Product) => void;
 }
 
-const HomePage: React.FC<HomePageProps> = ({ onNavigate, products, onWheelClick, heroSlides }) => {
+const HomePage: React.FC<HomePageProps> = ({ onNavigate, products, onWheelClick, heroSlides, onOpenProductDetails }) => {
   const featuredProducts = products.slice(0, 8);
   const promotionProducts = products.filter(p => p.isPromotion);
-
-  const handleProductClick = (productId: number) => {
-    onNavigate('catalog', productId);
-  };
 
   return (
     <>
@@ -39,9 +37,10 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, products, onWheelClick,
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8">
             {featuredProducts.map((product) => (
-              <div key={product.id} onClick={() => handleProductClick(product.id)} className="cursor-pointer">
+              <div key={product.id}>
                 <ProductCard 
                   product={product} 
+                  onQuickView={onOpenProductDetails}
                 />
               </div>
             ))}
@@ -59,6 +58,8 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, products, onWheelClick,
       </section>
 
       <AboutSection />
+      
+      <FAQSection />
     </>
   );
 };

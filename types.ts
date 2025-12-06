@@ -6,6 +6,7 @@ export interface Product {
   price: string;
   originalPrice?: string;
   imageUrl: string;
+  images?: string[]; // Array para múltiplas imagens
   description: string;
   shortDescription: string;
   sku: string;

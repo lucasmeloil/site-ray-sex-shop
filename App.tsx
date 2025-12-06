@@ -15,6 +15,7 @@ import LoginPage from './LoginPage';
 import PrizeWheel from './components/PrizeWheel';
 import AddProductModal from './components/AddProductModal';
 import CheckoutModal from './components/CheckoutModal';
+import ProductDetailsModal from './components/ProductDetailsModal';
 import { api } from './services/api';
 import type { Product, AdminUser, NavLink, HeroSlide } from './types';
 
@@ -27,6 +28,7 @@ const AppContent: React.FC = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [page, setPage] = useState<'home' | 'catalog' | 'contact' | 'admin'>('home');
   const [targetProductId, setTargetProductId] = useState<number | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   
   const { clearCart } = useCart();
   
@@ -49,8 +51,9 @@ const AppContent: React.FC = () => {
             setAdminUsers(fetchedAdmins);
             setHeroSlides(fetchedSlides);
         } catch (error) {
-            console.error("Erro ao carregar dados da API", error);
+            console.error("Erro crítico ao conectar com API:", error);
         } finally {
+             // Simulate Minimum loading time for aesthetics
              setTimeout(() => setIsLoading(false), 1000);
         }
     };
@@ -60,22 +63,17 @@ const AppContent: React.FC = () => {
     const ageVerified = sessionStorage.getItem('ageVerified');
     if (ageVerified === 'true') setIsAgeVerified(true);
     
-    const loggedInUserEmail = sessionStorage.getItem('adminLoggedIn');
-    if (loggedInUserEmail) {
-        // We need to wait for admins to load, but we can optimistically set if we find it later
-        // or just rely on the re-render when adminUsers populates. 
-        // For simplicity in this mock, we check in a separate effect or after load.
+    // Check for persistent login
+    const checkLogin = async () => {
+        const loggedInUserEmail = sessionStorage.getItem('adminLoggedIn');
+        if (loggedInUserEmail) {
+            const admins = await api.admins.list();
+            const user = admins.find(u => u.email === loggedInUserEmail);
+            if (user) setLoggedInUser(user);
+        }
     }
+    checkLogin();
   }, []);
-
-  // Sync login state after admins are loaded
-  useEffect(() => {
-      const loggedInUserEmail = sessionStorage.getItem('adminLoggedIn');
-      if (loggedInUserEmail && adminUsers.length > 0) {
-          const user = adminUsers.find(u => u.email === loggedInUserEmail);
-          if (user) setLoggedInUser(user);
-      }
-  }, [adminUsers]);
 
   const handleAgeVerification = () => {
     sessionStorage.setItem('ageVerified', 'true');
@@ -105,6 +103,10 @@ const AppContent: React.FC = () => {
     }
   };
 
+  const handleOpenProductDetails = (product: Product) => {
+      setSelectedProduct(product);
+  };
+
   // --- API Handlers ---
 
   const handleUpdateProduct = async (updatedProduct: Product) => {
@@ -112,7 +114,7 @@ const AppContent: React.FC = () => {
         const savedProduct = await api.products.update(updatedProduct);
         setProducts(prev => prev.map(p => p.id === savedProduct.id ? savedProduct : p));
     } catch (error) {
-        alert("Erro ao atualizar produto.");
+        alert("Erro de conexão ao atualizar produto.");
     }
   };
 
@@ -122,7 +124,7 @@ const AppContent: React.FC = () => {
           await api.products.delete(productId);
           setProducts(prev => prev.filter(p => p.id !== productId));
       } catch (error) {
-          alert("Erro ao excluir produto.");
+          alert("Erro de conexão ao excluir produto.");
       }
     }
   };
@@ -134,24 +136,23 @@ const AppContent: React.FC = () => {
         setIsAddModalOpen(false);
     } catch (error) {
         console.error(error);
-        throw new Error("Erro ao salvar no banco de dados.");
+        throw new Error("Erro de conexão com o banco de dados.");
     }
   };
   
+  // FIX: Login now calls API directly instead of relying on potentially stale state
   const handleLogin = async (email: string, pass: string): Promise<void> => {
-     // Simulate API Login
-     return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            const user = adminUsers.find(u => u.email === email && u.password === pass);
-            if (user) {
-                sessionStorage.setItem('adminLoggedIn', user.email);
-                setLoggedInUser(user);
-                resolve();
-            } else {
-                reject(new Error('Credenciais inválidas'));
-            }
-        }, 1000);
-     });
+     try {
+        const user = await api.admins.login(email, pass);
+        if (user) {
+            sessionStorage.setItem('adminLoggedIn', user.email);
+            setLoggedInUser(user);
+        } else {
+            throw new Error('Credenciais inválidas');
+        }
+     } catch (e) {
+         throw e;
+     }
   };
 
   const handleLogout = () => {
@@ -178,7 +179,6 @@ const AppContent: React.FC = () => {
       }
   };
 
-  // Hero Slide Handlers
   const handleUpdateSlide = async (updatedSlide: HeroSlide) => {
       try {
           const savedSlide = await api.slides.update(updatedSlide);
@@ -211,7 +211,6 @@ const AppContent: React.FC = () => {
           }
       }
   };
-
 
   const handleOpenCheckout = () => {
     setIsCartOpen(false);
@@ -260,7 +259,6 @@ const AppContent: React.FC = () => {
         />
       )}
       
-      {/* Added pb-20 for mobile bottom nav spacing */}
       <main className="relative z-10 pb-20 md:pb-0">
         {page === 'home' && (
             <HomePage 
@@ -268,9 +266,16 @@ const AppContent: React.FC = () => {
                 products={products} 
                 onWheelClick={() => setIsWheelOpen(true)}
                 heroSlides={heroSlides}
+                onOpenProductDetails={handleOpenProductDetails}
             />
         )}
-        {page === 'catalog' && <CatalogPage products={products} targetProductId={targetProductId} />}
+        {page === 'catalog' && (
+            <CatalogPage 
+                products={products} 
+                targetProductId={targetProductId} 
+                onOpenProductDetails={handleOpenProductDetails}
+            />
+        )}
         {page === 'contact' && <ContactPage />}
         {page === 'admin' && renderAdminSection()}
       </main>
@@ -281,6 +286,13 @@ const AppContent: React.FC = () => {
       <CheckoutModal isOpen={isCheckoutOpen} onClose={() => setIsCheckoutOpen(false)} onConfirm={handleConfirmCheckout} />
       <PrizeWheel isOpen={isWheelOpen} onClose={() => setIsWheelOpen(false)} />
       {isAddModalOpen && <AddProductModal onClose={() => setIsAddModalOpen(false)} onAdd={handleAddProduct} />}
+      
+      {selectedProduct && (
+        <ProductDetailsModal 
+            product={selectedProduct} 
+            onClose={() => setSelectedProduct(null)} 
+        />
+      )}
     </div>
   );
 };
