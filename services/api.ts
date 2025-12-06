@@ -4,10 +4,10 @@ import { INITIAL_PRODUCTS, INITIAL_ADMIN_USERS, INITIAL_SLIDES } from '../consta
 
 // Chaves do "Banco de Dados" (LocalStorage)
 const DB_KEYS = {
-  PRODUCTS: 'ray_sexshop_db_products',
-  ADMINS: 'ray_sexshop_db_admins',
-  SLIDES: 'ray_sexshop_db_slides',
-  CART: 'ray_sexshop_db_cart' // Nova tabela para persistência do carrinho
+  PRODUCTS: 'ray_sexshop_db_products_v2',
+  ADMINS: 'ray_sexshop_db_admins_v2',
+  SLIDES: 'ray_sexshop_db_slides_v2',
+  CART: 'ray_sexshop_db_cart_v2'
 };
 
 // Simulador de Latência de Rede (Network Latency)
@@ -23,7 +23,8 @@ export const api = {
           localStorage.setItem(DB_KEYS.PRODUCTS, JSON.stringify(INITIAL_PRODUCTS));
           return INITIAL_PRODUCTS;
         }
-        return JSON.parse(data);
+        const parsed = JSON.parse(data);
+        return Array.isArray(parsed) ? parsed : INITIAL_PRODUCTS;
       } catch (error) {
         console.error("Database Error (Products):", error);
         return INITIAL_PRODUCTS;
@@ -32,7 +33,10 @@ export const api = {
     create: async (product: Omit<Product, 'id'>): Promise<Product> => {
       await delay(500);
       const products = await api.products.list();
-      const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+      // Safe ID generation
+      const maxId = products.length > 0 ? Math.max(...products.map(p => p.id)) : 0;
+      const newId = maxId + 1;
+      
       const newProduct = { ...product, id: newId };
       const updatedList = [newProduct, ...products];
       localStorage.setItem(DB_KEYS.PRODUCTS, JSON.stringify(updatedList));
@@ -58,27 +62,37 @@ export const api = {
       await delay(200);
       try {
         const data = localStorage.getItem(DB_KEYS.CART);
-        return data ? JSON.parse(data) : [];
+        if (!data) return [];
+        const parsed = JSON.parse(data);
+        return Array.isArray(parsed) ? parsed : [];
       } catch (e) {
         return [];
       }
     },
     add: async (product: Product, quantity: number): Promise<CartItem[]> => {
       await delay(300);
-      const currentCart = await api.cart.get();
-      const existingItem = currentCart.find(item => item.id === product.id);
-      
-      let newCart;
-      if (existingItem) {
-        newCart = currentCart.map(item => 
-          item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
-        );
-      } else {
-        newCart = [...currentCart, { ...product, quantity }];
+      try {
+          const currentCart = await api.cart.get();
+          // Ensure product exists and has ID
+          if (!product || !product.id) throw new Error("Produto inválido");
+
+          const existingItem = currentCart.find(item => item.id === product.id);
+          
+          let newCart;
+          if (existingItem) {
+            newCart = currentCart.map(item => 
+              item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
+            );
+          } else {
+            newCart = [...currentCart, { ...product, quantity }];
+          }
+          
+          localStorage.setItem(DB_KEYS.CART, JSON.stringify(newCart));
+          return newCart;
+      } catch (err) {
+          console.error("Erro ao adicionar ao carrinho DB:", err);
+          throw err;
       }
-      
-      localStorage.setItem(DB_KEYS.CART, JSON.stringify(newCart));
-      return newCart;
     },
     updateQuantity: async (productId: number, quantity: number): Promise<CartItem[]> => {
       await delay(200);
@@ -123,7 +137,6 @@ export const api = {
       }
     },
     login: async (email: string, pass: string): Promise<AdminUser | null> => {
-        // Simula uma query segura ao banco
         await delay(600);
         const admins = await api.admins.list();
         const user = admins.find(u => u.email === email && u.password === pass);
@@ -132,8 +145,8 @@ export const api = {
     create: async (admin: Omit<AdminUser, 'id'>): Promise<AdminUser> => {
       await delay(500);
       const admins = await api.admins.list();
-      const newId = admins.length > 0 ? Math.max(...admins.map(u => u.id)) + 1 : 1;
-      const newAdmin = { ...admin, id: newId };
+      const maxId = admins.length > 0 ? Math.max(...admins.map(u => u.id)) : 0;
+      const newAdmin = { ...admin, id: maxId + 1 };
       const updatedList = [...admins, newAdmin];
       localStorage.setItem(DB_KEYS.ADMINS, JSON.stringify(updatedList));
       return newAdmin;
@@ -163,8 +176,8 @@ export const api = {
     create: async (slide: Omit<HeroSlide, 'id'>): Promise<HeroSlide> => {
       await delay(500);
       const slides = await api.slides.list();
-      const newId = slides.length > 0 ? Math.max(...slides.map(s => s.id)) + 1 : 1;
-      const newSlide = { ...slide, id: newId };
+      const maxId = slides.length > 0 ? Math.max(...slides.map(s => s.id)) : 0;
+      const newSlide = { ...slide, id: maxId + 1 };
       const updatedList = [...slides, newSlide];
       localStorage.setItem(DB_KEYS.SLIDES, JSON.stringify(updatedList));
       return newSlide;
