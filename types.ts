@@ -32,10 +32,16 @@ export interface CartContextType {
   totalPrice: number;
 }
 
+// SECURITY UPDATE: Password removed from frontend interface
 export interface AdminUser {
   id: number;
   email: string;
-  password: string;
+  // password field removed. Frontend should never know the password hash.
+}
+
+export interface AuthResponse {
+    token: string;
+    user: AdminUser;
 }
 
 export interface HeroSlide {
@@ -44,4 +50,11 @@ export interface HeroSlide {
     title: string;
     subtitle: string;
     buttonText: string;
+}
+
+export interface PageBanner {
+    pageId: 'catalog' | 'contact';
+    imageUrl: string;
+    title: string;
+    subtitle: string;
 }

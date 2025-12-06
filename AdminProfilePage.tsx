@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import type { AdminUser } from './types';
 
 interface AdminProfilePageProps {
   adminUsers: AdminUser[];
-  onAddAdmin: (newAdmin: Omit<AdminUser, 'id'>) => void;
+  onAddAdmin: (newAdmin: { email: string; password: string }) => void;
   onUpdateAdminPassword: (userId: number, newPassword: string) => void;
   currentUser: AdminUser;
 }

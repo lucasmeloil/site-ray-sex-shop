@@ -2,18 +2,19 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import ProductCard from './components/ProductCard';
 import Pagination from './components/Pagination';
-import type { Product } from './types';
-import { Search, Filter, Sparkles, SlidersHorizontal } from 'lucide-react';
+import type { Product, PageBanner } from './types';
+import { Search, Filter, SlidersHorizontal } from 'lucide-react';
 
 interface CatalogPageProps {
   products: Product[];
   targetProductId?: number | null;
   onOpenProductDetails: (product: Product) => void;
+  pageBanner: PageBanner;
 }
 
 const ITEMS_PER_PAGE = 12;
 
-const CatalogPage: React.FC<CatalogPageProps> = ({ products, targetProductId, onOpenProductDetails }) => {
+const CatalogPage: React.FC<CatalogPageProps> = ({ products, targetProductId, onOpenProductDetails, pageBanner }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
   const [searchQuery, setSearchQuery] = useState('');
@@ -78,12 +79,12 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ products, targetProductId, on
 
   return (
     <section id="catalog" className="bg-gray-50 min-h-screen pb-20">
-      {/* --- BANNER HEADER (Standardized) --- */}
+      {/* --- BANNER HEADER (Dynamic) --- */}
       <div className="relative w-full h-72 md:h-96 overflow-hidden flex items-center justify-center bg-gray-900">
          {/* Background Image */}
          <div 
             className="absolute inset-0 bg-cover bg-center transition-transform duration-[10s] hover:scale-105"
-            style={{ backgroundImage: "url('https://images.unsplash.com/photo-1507919909716-c8262e491cde?q=80&w=2000&auto=format&fit=crop')" }}
+            style={{ backgroundImage: `url('${pageBanner.imageUrl}')` }}
          ></div>
          
          {/* Overlay - Elegant Gradient */}
@@ -94,10 +95,10 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ products, targetProductId, on
                 Catálogo Exclusivo
             </span>
             <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight drop-shadow-lg mb-4">
-                Encontre o seu <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-red-600">Prazer</span>
+               {pageBanner.title}
             </h2>
             <p className="text-gray-300 text-sm md:text-lg font-light leading-relaxed">
-                Navegue por nossa seleção curada de produtos íntimos de alta qualidade.
+               {pageBanner.subtitle}
             </p>
          </div>
       </div>

@@ -1,23 +1,41 @@
 
 import React from 'react';
 import { Mail, Phone, MapPin, Send, MessageCircle } from 'lucide-react';
+import type { PageBanner } from '../types';
 
-const ContactPage: React.FC = () => {
+interface ContactPageProps {
+    pageBanner: PageBanner;
+}
+
+const ContactPage: React.FC<ContactPageProps> = ({ pageBanner }) => {
   return (
-    <section id="contact" className="py-28 px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen relative overflow-hidden">
-        {/* Background glow - Subtle */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-red-100/40 blur-[100px] rounded-full pointer-events-none opacity-50"></div>
+    <section id="contact" className="bg-gray-50 min-h-screen pb-20 relative overflow-hidden">
+        
+       {/* --- BANNER HEADER (Dynamic) --- */}
+      <div className="relative w-full h-72 md:h-96 overflow-hidden flex items-center justify-center bg-gray-900">
+         {/* Background Image */}
+         <div 
+            className="absolute inset-0 bg-cover bg-center transition-transform duration-[10s] hover:scale-105"
+            style={{ backgroundImage: `url('${pageBanner.imageUrl}')` }}
+         ></div>
+         
+         {/* Overlay - Elegant Gradient */}
+         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent"></div>
 
-       <div className="max-w-6xl mx-auto pt-4 relative z-10">
-        <div className="text-center mb-16 animate-fade-in-up">
-            <span className="text-red-600 font-bold tracking-widest uppercase text-xs mb-2 block">Atendimento Exclusivo</span>
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">
-                Fale <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-400">Conosco</span>
+         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto animate-fade-in-up">
+            <span className="inline-block py-1 px-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] font-bold tracking-[0.2em] uppercase mb-4">
+                Atendimento Exclusivo
+            </span>
+            <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight drop-shadow-lg mb-4">
+               {pageBanner.title}
             </h2>
-            <p className="mt-4 text-lg text-gray-500 max-w-xl mx-auto font-light">
-                Estamos aqui para tirar suas dúvidas com total discrição e rapidez.
+            <p className="text-gray-300 text-sm md:text-lg font-light leading-relaxed">
+               {pageBanner.subtitle}
             </p>
-        </div>
+         </div>
+      </div>
+
+       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20">
         
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
             {/* Left Column: Form */}

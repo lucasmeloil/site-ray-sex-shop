@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
-import type { Product, AdminUser, HeroSlide } from './types';
+import type { Product, AdminUser, HeroSlide, PageBanner } from './types';
 import AdminProfilePage from './AdminProfilePage';
 import AdminProductRow from './components/AdminProductRow';
-import { LogOut, Home, Image as ImageIcon, Type, MousePointer2 } from 'lucide-react';
+import { LogOut, Home, Image as ImageIcon, Type, MousePointer2, FileText, LayoutTemplate } from 'lucide-react';
 
 interface AdminPageProps {
   products: Product[];
@@ -13,16 +12,18 @@ interface AdminPageProps {
   onLogout: () => void;
   onBack: () => void;
   adminUsers: AdminUser[];
-  onAddAdmin: (newAdmin: Omit<AdminUser, 'id'>) => void;
+  onAddAdmin: (newAdmin: { email: string; password: string }) => void;
   onUpdateAdminPassword: (userId: number, newPassword: string) => void;
   currentUser: AdminUser;
   heroSlides: HeroSlide[];
   onUpdateSlide: (slide: HeroSlide) => void;
   onAddSlide: (slide: Omit<HeroSlide, 'id'>) => void;
   onDeleteSlide: (id: number) => void;
+  pageBanners: PageBanner[];
+  onUpdatePageBanner: (banner: PageBanner) => void;
 }
 
-type AdminTab = 'products' | 'users' | 'hero';
+type AdminTab = 'products' | 'users' | 'hero' | 'pages';
 
 const AdminPage: React.FC<AdminPageProps> = (props) => {
   const [activeTab, setActiveTab] = useState<AdminTab>('products');
@@ -62,7 +63,13 @@ const AdminPage: React.FC<AdminPageProps> = (props) => {
           onClick={() => setActiveTab('hero')} 
           className={`py-4 px-6 text-sm font-bold transition-all border-b-2 whitespace-nowrap ${activeTab === 'hero' ? 'border-red-600 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
         >
-          🖼️ Banners (Slides)
+          🖼️ Banners (Home)
+        </button>
+         <button 
+          onClick={() => setActiveTab('pages')} 
+          className={`py-4 px-6 text-sm font-bold transition-all border-b-2 whitespace-nowrap ${activeTab === 'pages' ? 'border-red-600 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+        >
+          📄 Páginas
         </button>
         <button 
           onClick={() => setActiveTab('users')} 
@@ -87,6 +94,12 @@ const AdminPage: React.FC<AdminPageProps> = (props) => {
                 onUpdate={props.onUpdateSlide}
                 onAdd={props.onAddSlide}
                 onDelete={props.onDeleteSlide}
+            />
+        )}
+        {activeTab === 'pages' && (
+            <AdminPagesSection
+                banners={props.pageBanners}
+                onUpdate={props.onUpdatePageBanner}
             />
         )}
         {activeTab === 'users' && (
@@ -377,5 +390,152 @@ const AdminSlideRow: React.FC<{ slide: HeroSlide, index: number, onUpdate: (s: H
         </div>
     )
 }
+
+// --- Page Banners Section ---
+const AdminPagesSection: React.FC<{
+    banners: PageBanner[],
+    onUpdate: (b: PageBanner) => void
+}> = ({ banners, onUpdate }) => {
+    const [selectedPage, setSelectedPage] = useState<'catalog' | 'contact'>('catalog');
+    
+    // Find the banner for the currently selected page
+    const currentBanner = banners.find(b => b.pageId === selectedPage) || {
+        pageId: selectedPage,
+        imageUrl: '',
+        title: '',
+        subtitle: ''
+    };
+
+    const [editedBanner, setEditedBanner] = useState(currentBanner);
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+    // Update local state when selected page changes
+    React.useEffect(() => {
+        const found = banners.find(b => b.pageId === selectedPage);
+        if (found) {
+            setEditedBanner(found);
+        } else {
+             setEditedBanner({ pageId: selectedPage, imageUrl: '', title: '', subtitle: '' });
+        }
+        setHasUnsavedChanges(false);
+    }, [selectedPage, banners]);
+
+    const handleSave = () => {
+        onUpdate(editedBanner);
+        setHasUnsavedChanges(false);
+        alert("Banner atualizado com sucesso!");
+    };
+    
+    const handleChange = (field: keyof PageBanner, value: string) => {
+        setEditedBanner(prev => ({ ...prev, [field]: value }));
+        setHasUnsavedChanges(true);
+    }
+    
+    const inputClass = "w-full p-3 rounded border border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-red-500 focus:border-red-500";
+
+    return (
+        <div className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm">
+             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                 <div>
+                    <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                        <LayoutTemplate className="text-red-600" />
+                        Gerenciar Capas das Páginas
+                    </h2>
+                    <p className="text-gray-500 text-sm mt-1">Edite a imagem de destaque e os textos do topo das páginas internas.</p>
+                 </div>
+                 
+                 {/* Page Selector */}
+                 <div className="flex bg-gray-100 p-1 rounded-lg">
+                     <button 
+                        onClick={() => setSelectedPage('catalog')}
+                        className={`px-4 py-2 rounded-md text-sm font-bold transition-all ${selectedPage === 'catalog' ? 'bg-white shadow text-red-600' : 'text-gray-500 hover:text-gray-700'}`}
+                     >
+                        Catálogo
+                     </button>
+                      <button 
+                        onClick={() => setSelectedPage('contact')}
+                        className={`px-4 py-2 rounded-md text-sm font-bold transition-all ${selectedPage === 'contact' ? 'bg-white shadow text-red-600' : 'text-gray-500 hover:text-gray-700'}`}
+                     >
+                        Contato
+                     </button>
+                 </div>
+             </div>
+             
+             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                 {/* Preview */}
+                 <div className="space-y-3">
+                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Pré-visualização</label>
+                     <div className="relative w-full h-64 bg-gray-900 rounded-xl overflow-hidden shadow-lg group">
+                         <img 
+                            src={editedBanner.imageUrl} 
+                            alt="Banner Preview" 
+                            className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" 
+                            onError={(e) => (e.currentTarget.src = 'https://placehold.co/800x400?text=Imagem+Indisponível')}
+                         />
+                         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
+                         <div className="absolute bottom-0 left-0 p-6 text-white w-full">
+                             <span className="inline-block py-1 px-2 rounded bg-white/20 backdrop-blur-sm text-[10px] font-bold uppercase mb-2 border border-white/10">
+                                 {selectedPage === 'catalog' ? 'Catálogo Exclusivo' : 'Atendimento'}
+                             </span>
+                             <h3 className="text-3xl font-black leading-none mb-2">{editedBanner.title || 'Título da Página'}</h3>
+                             <p className="text-sm font-light text-gray-200 line-clamp-2">{editedBanner.subtitle || 'Subtítulo da página...'}</p>
+                         </div>
+                     </div>
+                     <p className="text-xs text-gray-400 text-center">A aparência real pode variar dependendo do tamanho da tela.</p>
+                 </div>
+
+                 {/* Editor Form */}
+                 <div className="space-y-5">
+                     <div>
+                         <label className="block text-sm font-bold text-gray-700 mb-1">URL da Imagem</label>
+                         <div className="flex gap-2">
+                             <input 
+                                type="text" 
+                                value={editedBanner.imageUrl} 
+                                onChange={(e) => handleChange('imageUrl', e.target.value)} 
+                                className={inputClass} 
+                                placeholder="https://..."
+                             />
+                         </div>
+                     </div>
+                     
+                     <div>
+                         <label className="block text-sm font-bold text-gray-700 mb-1">Título Principal</label>
+                         <input 
+                            type="text" 
+                            value={editedBanner.title} 
+                            onChange={(e) => handleChange('title', e.target.value)} 
+                            className={inputClass} 
+                         />
+                     </div>
+
+                     <div>
+                         <label className="block text-sm font-bold text-gray-700 mb-1">Subtítulo / Descrição</label>
+                         <textarea 
+                            value={editedBanner.subtitle} 
+                            onChange={(e) => handleChange('subtitle', e.target.value)} 
+                            rows={3}
+                            className={inputClass} 
+                         ></textarea>
+                     </div>
+
+                     <div className="pt-4 flex justify-end">
+                         <button 
+                            onClick={handleSave} 
+                            disabled={!hasUnsavedChanges}
+                            className={`px-8 py-3 rounded-full font-bold shadow-md transition-all flex items-center gap-2
+                                ${hasUnsavedChanges 
+                                    ? 'bg-red-600 text-white hover:bg-red-700 transform hover:scale-105' 
+                                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                         >
+                            <FileText size={18} />
+                            Salvar Alterações
+                         </button>
+                     </div>
+                 </div>
+             </div>
+        </div>
+    );
+};
 
 export default AdminPage;

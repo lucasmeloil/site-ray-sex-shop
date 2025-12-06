@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -17,7 +16,8 @@ import AddProductModal from './components/AddProductModal';
 import CheckoutModal from './components/CheckoutModal';
 import ProductDetailsModal from './components/ProductDetailsModal';
 import { api } from './services/api';
-import type { Product, AdminUser, NavLink, HeroSlide } from './types';
+import type { Product, AdminUser, NavLink, HeroSlide, PageBanner } from './types';
+import { INITIAL_PAGE_BANNERS } from './constants';
 
 const AppContent: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -36,20 +36,23 @@ const AppContent: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
+  const [pageBanners, setPageBanners] = useState<PageBanner[]>(INITIAL_PAGE_BANNERS);
   const [loggedInUser, setLoggedInUser] = useState<AdminUser | null>(null);
 
   // Initial Data Load
   useEffect(() => {
     const loadData = async () => {
         try {
-            const [fetchedProducts, fetchedAdmins, fetchedSlides] = await Promise.all([
+            const [fetchedProducts, fetchedAdmins, fetchedSlides, fetchedBanners] = await Promise.all([
                 api.products.list(),
                 api.admins.list(),
-                api.slides.list()
+                api.slides.list(),
+                api.pageBanners.list()
             ]);
             setProducts(fetchedProducts);
             setAdminUsers(fetchedAdmins);
             setHeroSlides(fetchedSlides);
+            setPageBanners(fetchedBanners);
         } catch (error) {
             console.error("Erro crítico ao conectar com API:", error);
         } finally {
@@ -161,7 +164,7 @@ const AppContent: React.FC = () => {
     setPage('home');
   };
 
-  const handleAddAdmin = async (newAdmin: Omit<AdminUser, 'id'>) => {
+  const handleAddAdmin = async (newAdmin: { email: string; password: string }) => {
       try {
           const createdAdmin = await api.admins.create(newAdmin);
           setAdminUsers(prev => [...prev, createdAdmin]);
@@ -212,6 +215,18 @@ const AppContent: React.FC = () => {
       }
   };
 
+  const handleUpdatePageBanner = async (banner: PageBanner) => {
+      try {
+          const savedBanner = await api.pageBanners.update(banner);
+          setPageBanners(prev => {
+              const others = prev.filter(b => b.pageId !== savedBanner.pageId);
+              return [...others, savedBanner];
+          });
+      } catch (error) {
+          alert("Erro ao salvar banner da página.");
+      }
+  };
+
   const handleOpenCheckout = () => {
     setIsCartOpen(false);
     setIsCheckoutOpen(true);
@@ -241,11 +256,16 @@ const AppContent: React.FC = () => {
           onUpdateSlide={handleUpdateSlide}
           onAddSlide={handleAddSlide}
           onDeleteSlide={handleDeleteSlide}
+          pageBanners={pageBanners}
+          onUpdatePageBanner={handleUpdatePageBanner}
         />
       );
     }
     return <LoginPage onLogin={handleLogin} onBack={() => setPage('home')} />;
   };
+  
+  const catalogBanner = pageBanners.find(b => b.pageId === 'catalog') || INITIAL_PAGE_BANNERS[0];
+  const contactBanner = pageBanners.find(b => b.pageId === 'contact') || INITIAL_PAGE_BANNERS[1];
 
   return (
     <div className="bg-gray-50 text-gray-800 min-h-screen font-sans selection:bg-red-200 selection:text-red-900">
@@ -274,9 +294,10 @@ const AppContent: React.FC = () => {
                 products={products} 
                 targetProductId={targetProductId} 
                 onOpenProductDetails={handleOpenProductDetails}
+                pageBanner={catalogBanner}
             />
         )}
-        {page === 'contact' && <ContactPage />}
+        {page === 'contact' && <ContactPage pageBanner={contactBanner} />}
         {page === 'admin' && renderAdminSection()}
       </main>
       

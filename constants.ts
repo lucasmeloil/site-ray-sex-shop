@@ -1,5 +1,4 @@
-
-import type { Product, NavLink, AdminUser, HeroSlide } from './types';
+import type { Product, NavLink, AdminUser, HeroSlide, PageBanner } from './types';
 
 export const NAV_LINKS: NavLink[] = [
   { name: 'Início', id: 'home' },
@@ -9,8 +8,8 @@ export const NAV_LINKS: NavLink[] = [
 ];
 
 export const INITIAL_ADMIN_USERS: AdminUser[] = [
-    { id: 1, email: 'ray@sexshop.com.br', password: 'admin123' },
-    { id: 2, email: 'lucasmelo@nexus.com', password: 'lucas102030' }
+    { id: 1, email: 'ray@sexshop.com.br' },
+    { id: 2, email: 'lucasmelo@nexus.com' }
 ];
 
 export const INITIAL_SLIDES: HeroSlide[] = [
@@ -34,6 +33,21 @@ export const INITIAL_SLIDES: HeroSlide[] = [
         title: 'Kits para Casais',
         subtitle: ' reacenda a chama com nossos kits preparados para noites inesquecíveis.',
         buttonText: 'Ver Kits'
+    }
+];
+
+export const INITIAL_PAGE_BANNERS: PageBanner[] = [
+    {
+        pageId: 'catalog',
+        imageUrl: 'https://images.unsplash.com/photo-1507919909716-c8262e491cde?q=80&w=2000&auto=format&fit=crop',
+        title: 'Encontre o seu Prazer',
+        subtitle: 'Navegue por nossa seleção curada de produtos íntimos de alta qualidade.'
+    },
+    {
+        pageId: 'contact',
+        imageUrl: 'https://images.unsplash.com/photo-1516726817505-f5ed825624d8?q=80&w=2000&auto=format&fit=crop',
+        title: 'Fale Conosco',
+        subtitle: 'Estamos aqui para tirar suas dúvidas com total discrição.'
     }
 ];
 
